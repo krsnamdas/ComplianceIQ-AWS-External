@@ -1,0 +1,7 @@
+ComplianceIQ multi-repo sync test.
+
+This file verifies that scripts/sync-repos.sh correctly propagates shared
+files to all three repos (normal / aws-external / gemini).
+
+Created: 2026-09-25
+Safe to delete after verifying the sync worked.
