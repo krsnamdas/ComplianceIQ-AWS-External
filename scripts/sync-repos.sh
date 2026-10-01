@@ -89,6 +89,30 @@ fi
 SOURCE_SHA="$(git rev-parse HEAD)"
 echo ">> Source commit: $SOURCE_SHA"
 
+# --- Gemini backend warning -------------------------------------------------
+# server.ts and package.json are EDITION-SPECIFIC for Gemini (Google backend,
+# not AWS Bedrock). The sync NEVER copies them to Gemini. If this commit
+# touched either file, remind the user to hand-port the change to Gemini.
+EDITION_FILES=("server.ts" "package.json")
+TOUCHED=()
+for f in "${EDITION_FILES[@]}"; do
+  if ! git diff-tree --no-commit-id --name-only -r "$SOURCE_SHA" 2>/dev/null | grep -qx "$f"; then
+    continue
+  fi
+  TOUCHED+=("$f")
+done
+if [[ ${#TOUCHED[@]} -gt 0 ]]; then
+  echo ""
+  echo "  ****************************************************************"
+  echo "  *  HEADS UP: this commit changed: ${TOUCHED[*]}"
+  echo "  *"
+  echo "  *  These files are NOT synced to the Gemini repo, because"
+  echo "  *  Gemini uses a different (Google) backend. If your change"
+  echo "  *  affects app behavior, update Gemini's version BY HAND."
+  echo "  ****************************************************************"
+  echo ""
+fi
+
 # --- Step 2: push the source branch to origin (normal edition) --------------
 echo ">> Pushing $SOURCE_BRANCH to origin (normal edition) ..."
 if [[ "$DRY_RUN" == "true" ]]; then
