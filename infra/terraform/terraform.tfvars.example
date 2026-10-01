@@ -1,0 +1,9 @@
+# Copy to terraform.tfvars and fill in. terraform.tfvars is gitignored.
+env_name             = "nonprod"
+aws_region           = "us-east-1"
+image_uri            = "<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/complianceiq:latest"
+internal_domain_name = "complianceiq.internal"
+bedrock_model_id     = "amazon.nova-pro-v1:0"
+cpu                  = 512
+memory_mib           = 1024
+vpc_cidr             = "10.42.0.0/16"

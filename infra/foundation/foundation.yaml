@@ -1,0 +1,328 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  ComplianceIQ account foundation (baseline) — single Isengard account.
+  Creates the shared prerequisites the app IaC (CDK/Terraform) sits on top of:
+  Terraform remote-state backend (S3 + DynamoDB lock), ECR repository, an admin
+  IAM group + policy for the operators who deploy the app, a CloudWatch log
+  retention baseline, and (optionally) a dedicated CloudTrail.
+
+  NOTE: This is an ACCOUNT-LEVEL foundation, NOT an AWS Organizations / Control
+  Tower "Landing Zone". In Isengard, org-level governance is centrally managed;
+  do not attempt Control Tower/Organizations here.
+
+# ---------------------------------------------------------------------------
+Parameters:
+  ProjectName:
+    Type: String
+    Default: complianceiq
+    Description: Prefix for resource names.
+
+  EnvName:
+    Type: String
+    Default: nonprod
+    AllowedValues: [nonprod, prod]
+    Description: Environment this foundation supports.
+
+  EcrRepoName:
+    Type: String
+    Default: complianceiq
+    Description: Name of the ECR repository for the app image.
+
+  AdminPrincipalArns:
+    Type: CommaDelimitedList
+    Default: ''
+    Description: >
+      OPTIONAL. Comma-separated IAM principal ARNs for the 2 admins/operators
+      (e.g. federated role ARNs or IAM user ARNs). If provided, they are allowed
+      to assume the admin deploy role. Leave blank to skip role trust wiring
+      (you can add principals to the created IAM group manually instead).
+
+  CreateCloudTrail:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true', 'false']
+    Description: >
+      Set 'true' to create a dedicated CloudTrail + S3 bucket. In Isengard a
+      central org-trail usually already exists, so default is 'false'.
+
+  StateBucketName:
+    Type: String
+    Default: ''
+    Description: >
+      OPTIONAL explicit name for the Terraform state S3 bucket (must be globally
+      unique). Leave blank to auto-generate a unique name.
+
+# ---------------------------------------------------------------------------
+Conditions:
+  HasAdmins: !Not [!Equals [!Join ['', !Ref AdminPrincipalArns], '']]
+  MakeCloudTrail: !Equals [!Ref CreateCloudTrail, 'true']
+  AutoStateBucketName: !Equals [!Ref StateBucketName, '']
+
+# ---------------------------------------------------------------------------
+Resources:
+
+  # ---- Terraform remote state backend (only needed if you use Terraform) ----
+  TerraformStateBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !If
+        - AutoStateBucketName
+        - !Sub '${ProjectName}-${EnvName}-tfstate-${AWS::AccountId}'
+        - !Ref StateBucketName
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: aws:kms
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      Tags:
+        - { Key: Project, Value: !Ref ProjectName }
+        - { Key: Environment, Value: !Ref EnvName }
+        - { Key: ManagedBy, Value: CloudFormation-Foundation }
+
+  TerraformLockTable:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      TableName: !Sub '${ProjectName}-${EnvName}-tf-locks'
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: LockID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: LockID
+          KeyType: HASH
+      SSESpecification:
+        SSEEnabled: true
+      Tags:
+        - { Key: Project, Value: !Ref ProjectName }
+        - { Key: Environment, Value: !Ref EnvName }
+        - { Key: ManagedBy, Value: CloudFormation-Foundation }
+
+  # ---- ECR repository for the app image --------------------------------------
+  AppEcrRepo:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Ref EcrRepoName
+      ImageScanningConfiguration:
+        ScanOnPush: true
+      ImageTagMutability: MUTABLE
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Keep last 10 images",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 10
+                },
+                "action": { "type": "expire" }
+              }
+            ]
+          }
+      Tags:
+        - { Key: Project, Value: !Ref ProjectName }
+        - { Key: Environment, Value: !Ref EnvName }
+        - { Key: ManagedBy, Value: CloudFormation-Foundation }
+
+  # ---- Admin operators: IAM group + managed policy ---------------------------
+  # The group is for day-to-day operators; attach your 2 admins to it (or use the
+  # assumable role below for federated identities).
+  AdminGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: !Sub '${ProjectName}-${EnvName}-admins'
+
+  AdminDeployPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub '${ProjectName}-${EnvName}-deploy'
+      Description: Permissions for the 2 admins to deploy & operate the app stack.
+      Groups: [!Ref AdminGroup]
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          # Deploy the app stack (CDK-CloudFormation or Terraform-managed resources)
+          - Sid: DeployInfra
+            Effect: Allow
+            Action:
+              - cloudformation:*
+              - ecs:*
+              - ec2:*
+              - elasticloadbalancing:*
+              - elasticfilesystem:*
+              - route53:*
+              - logs:*
+              - iam:GetRole
+              - iam:PassRole
+              - iam:CreateRole
+              - iam:DeleteRole
+              - iam:AttachRolePolicy
+              - iam:DetachRolePolicy
+              - iam:PutRolePolicy
+              - iam:DeleteRolePolicy
+              - iam:CreateServiceLinkedRole
+              - iam:TagRole
+              - secretsmanager:*
+              - application-autoscaling:*
+            Resource: '*'
+          # Push/pull the app image
+          - Sid: Ecr
+            Effect: Allow
+            Action:
+              - ecr:GetAuthorizationToken
+              - ecr:BatchCheckLayerAvailability
+              - ecr:GetDownloadUrlForLayer
+              - ecr:BatchGetImage
+              - ecr:PutImage
+              - ecr:InitiateLayerUpload
+              - ecr:UploadLayerPart
+              - ecr:CompleteLayerUpload
+              - ecr:DescribeRepositories
+              - ecr:ListImages
+            Resource: '*'
+          # Terraform state access
+          - Sid: TfState
+            Effect: Allow
+            Action:
+              - s3:ListBucket
+              - s3:GetObject
+              - s3:PutObject
+              - s3:DeleteObject
+            Resource:
+              - !GetAtt TerraformStateBucket.Arn
+              - !Sub '${TerraformStateBucket.Arn}/*'
+          - Sid: TfLock
+            Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+              - dynamodb:DeleteItem
+            Resource: !GetAtt TerraformLockTable.Arn
+          # Read logs & monitor the running app
+          - Sid: Observe
+            Effect: Allow
+            Action:
+              - cloudwatch:*
+              - logs:GetLogEvents
+              - logs:FilterLogEvents
+              - logs:DescribeLogGroups
+              - logs:DescribeLogStreams
+            Resource: '*'
+
+  # Assumable admin role for FEDERATED identities (Isengard). Only created when
+  # AdminPrincipalArns is provided.
+  AdminDeployRole:
+    Type: AWS::IAM::Role
+    Condition: HasAdmins
+    Properties:
+      RoleName: !Sub '${ProjectName}-${EnvName}-admin-deploy'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref AdminPrincipalArns
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Ref AdminDeployPolicy
+      Tags:
+        - { Key: Project, Value: !Ref ProjectName }
+        - { Key: Environment, Value: !Ref EnvName }
+
+  # ---- CloudWatch log retention baseline (app log group pre-created) ---------
+  AppLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/${ProjectName}/${EnvName}'
+      RetentionInDays: 30
+
+  # ---- Optional dedicated CloudTrail (usually already exists in Isengard) -----
+  CloudTrailBucket:
+    Type: AWS::S3::Bucket
+    Condition: MakeCloudTrail
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub '${ProjectName}-${EnvName}-cloudtrail-${AWS::AccountId}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  CloudTrailBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Condition: MakeCloudTrail
+    Properties:
+      Bucket: !Ref CloudTrailBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AWSCloudTrailAclCheck
+            Effect: Allow
+            Principal: { Service: cloudtrail.amazonaws.com }
+            Action: s3:GetBucketAcl
+            Resource: !GetAtt CloudTrailBucket.Arn
+          - Sid: AWSCloudTrailWrite
+            Effect: Allow
+            Principal: { Service: cloudtrail.amazonaws.com }
+            Action: s3:PutObject
+            Resource: !Sub '${CloudTrailBucket.Arn}/AWSLogs/${AWS::AccountId}/*'
+            Condition:
+              StringEquals:
+                s3:x-amz-acl: bucket-owner-full-control
+
+  AppCloudTrail:
+    Type: AWS::CloudTrail::Trail
+    Condition: MakeCloudTrail
+    DependsOn: CloudTrailBucketPolicy
+    Properties:
+      TrailName: !Sub '${ProjectName}-${EnvName}-trail'
+      S3BucketName: !Ref CloudTrailBucket
+      IsLogging: true
+      IncludeGlobalServiceEvents: true
+      IsMultiRegionTrail: true
+      EnableLogFileValidation: true
+
+# ---------------------------------------------------------------------------
+Outputs:
+  StateBucketName:
+    Description: Terraform remote state S3 bucket (use in the TF backend block)
+    Value: !Ref TerraformStateBucket
+
+  LockTableName:
+    Description: Terraform lock DynamoDB table (use in the TF backend block)
+    Value: !Ref TerraformLockTable
+
+  EcrRepositoryUri:
+    Description: Push the app image here
+    Value: !Sub '${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${EcrRepoName}'
+
+  AdminGroupName:
+    Description: Attach the 2 admin IAM users to this group (or use the role)
+    Value: !Ref AdminGroup
+
+  AdminDeployRoleArn:
+    Condition: HasAdmins
+    Description: Federated admins assume this role to deploy
+    Value: !GetAtt AdminDeployRole.Arn
+
+  AppLogGroupName:
+    Description: Pre-created CloudWatch log group for the app
+    Value: !Ref AppLogGroup

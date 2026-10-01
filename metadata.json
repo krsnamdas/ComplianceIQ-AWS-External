@@ -1,0 +1,6 @@
+{
+  "name": "ComplianceIQ",
+  "description": "Middle East, North Africa & Türkiye Regulations & Controls ",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

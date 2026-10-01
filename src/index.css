@@ -1,0 +1,412 @@
+@import "tailwindcss";
+
+/* =============================================================================
+   ComplianceIQ Theme System
+   -----------------------------------------------------------------------------
+   The app has ~1,800 hardcoded Tailwind color classes across 43 components,
+   built around a small set of families:
+     - `slate`   -> app surfaces + neutral text
+     - `cyan`    -> primary accent (badges, links, highlights)
+     - `emerald` -> success / "active" accent
+   Rather than editing every component, we remap those Tailwind color scales
+   here in one place (Tailwind v4 `@theme`). Changing the values below re-skins
+   the entire application.
+
+   STEP 1 (current): "Warm Graphite" dark palette (Direction A)
+     - Warm charcoal surfaces instead of cold blue-black
+     - Indigo-violet primary accent (mapped onto the `cyan` family)
+     - Green retained for success (mapped onto the `emerald` family)
+     - Typography: Inter (UI/body via font-sans) + IBM Plex Mono (font-mono)
+
+   STEP 2 (later): a Light palette (Direction B) under `html.light`.
+   ============================================================================= */
+
+@theme {
+  /* ---- Typography -------------------------------------------------------- */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas,
+    monospace;
+
+  /* ---- SURFACES (mapped onto Tailwind `slate`) --------------------------
+     Direction A "Warm Graphite": neutral warm charcoal rather than blue-slate.
+     Dark end = deep surfaces; light end = near-white text.                   */
+  --color-slate-950: #131109; /* app background */
+  --color-slate-900: #1c1a13; /* raised cards / navbar */
+  --color-slate-800: #3a352b; /* borders / dividers */
+  --color-slate-700: #4d4638; /* stronger borders / hover */
+  --color-slate-600: #6b6250; /* muted UI lines */
+  --color-slate-500: #8a8069; /* faint text */
+  --color-slate-400: #a49c8c; /* secondary text */
+  --color-slate-300: #c9c2b4; /* body text */
+  --color-slate-200: #ddd8cc; /* strong text */
+  --color-slate-100: #efece4; /* headings on dark */
+  --color-slate-50:  #f7f5ef;
+
+  /* ---- PRIMARY ACCENT (mapped onto Tailwind `cyan`) ----------------------
+     Indigo-violet. Used for badges, links, active states, highlights.        */
+  --color-cyan-950: #221c3a;
+  --color-cyan-900: #2c2550;
+  --color-cyan-800: #3a3072;
+  --color-cyan-700: #4c3fa0;
+  --color-cyan-600: #5b49c9; /* primary buttons */
+  --color-cyan-500: #6d5bd0; /* primary accent */
+  --color-cyan-400: #8b78e6; /* accent text on dark */
+  --color-cyan-300: #b6a8f0; /* bright accent text */
+  --color-cyan-200: #d2c8f7;
+  --color-cyan-100: #e7e0fb;
+
+  /* ---- SUCCESS ACCENT (mapped onto Tailwind `emerald`) -------------------
+     Retained as green for "active / ok / in force", tuned to sit on graphite. */
+  --color-emerald-950: #0c2a1c;
+  --color-emerald-900: #123726;
+  --color-emerald-800: #185038;
+  --color-emerald-700: #1f6b4b;
+  --color-emerald-600: #268a5f;
+  --color-emerald-500: #34a06f; /* success buttons */
+  --color-emerald-400: #4bb37a; /* success accent text */
+  --color-emerald-300: #69c993; /* bright success text */
+  --color-emerald-200: #a7e0c0;
+  --color-emerald-100: #d3f0e0;
+
+  /* Semantic status colors (red = critical, amber = warning) are left at
+     Tailwind defaults so their meaning is preserved everywhere. */
+}
+
+/* =============================================================================
+   Root surface + theme transition
+   ============================================================================= */
+html,
+body {
+  background-color: var(--color-slate-950);
+}
+
+/* D3-rendered heatmap axis labels read these (inline SVG can't use Tailwind
+   classes). Dark defaults here; light overrides in the html.light block. */
+:root {
+  --heatmap-axis-label: #e2e8f0;
+  --heatmap-axis-header: #94a3b8;
+}
+html.light {
+  --heatmap-axis-label: #1e293b;
+  --heatmap-axis-header: #475569;
+}
+
+#root {
+  transition: filter 0.35s ease, background-color 0.35s ease;
+  min-height: 100vh;
+}
+
+/* =============================================================================
+   LIGHT THEME — "Light Executive" (Direction B)
+   -----------------------------------------------------------------------------
+   Activated by adding `light` to <html> (via ThemeContext). We override the
+   same CSS variables the @theme block defined, so every component that uses the
+   slate / cyan / emerald families re-skins to the light palette with no
+   component edits.
+
+   Palette:
+     - Surfaces: paper / white  (slate-950 = page, slate-900 = cards)
+     - Text ramp INVERTED: low slate numbers = dark ink, high = faint
+     - Primary accent (cyan family): teal
+     - Success (emerald family): green tuned for white backgrounds
+   ============================================================================= */
+html.light {
+  /* Surfaces (light): page = soft paper, cards = white, borders = cool gray */
+  --color-slate-950: #eef2f7; /* page background */
+  --color-slate-900: #ffffff; /* raised cards / navbar */
+  --color-slate-800: #dbe2ea; /* borders / dividers */
+  --color-slate-700: #cbd5e1; /* stronger borders / hover surfaces */
+  --color-slate-600: #667085; /* muted UI lines + placeholders (AA on light inputs) */
+  --color-slate-500: #5b6675; /* faint/secondary text (AA on paper + white) */
+  --color-slate-400: #556072; /* secondary text (AA on paper + white) */
+  --color-slate-300: #334155; /* body text */
+  --color-slate-200: #1e293b; /* strong text */
+  --color-slate-100: #0f172a; /* headings (near-black ink) */
+  --color-slate-50:  #0b1220;
+
+  /* Primary accent (cyan family) -> teal, tuned for white backgrounds */
+  --color-cyan-950: #ecfdf9;
+  --color-cyan-900: #d0f5ec;
+  --color-cyan-800: #a7e8d9;
+  --color-cyan-700: #5cc2ad;
+  --color-cyan-600: #0f766e; /* primary buttons */
+  --color-cyan-500: #0f766e; /* primary accent */
+  --color-cyan-400: #0e7a6f; /* accent text on white (AA+) */
+  --color-cyan-300: #0b5f57; /* stronger accent text */
+  --color-cyan-200: #0a4f48;
+  --color-cyan-100: #063f39;
+
+  /* Success (emerald family) -> green tuned for white backgrounds */
+  --color-emerald-950: #ecfdf5;
+  --color-emerald-900: #d1fae5;
+  --color-emerald-800: #a7f3cf;
+  --color-emerald-700: #34d39a;
+  --color-emerald-600: #16a34a;
+  --color-emerald-500: #15803d;
+  --color-emerald-400: #15803d; /* success text on white (AA+) */
+  --color-emerald-300: #166534; /* stronger success text */
+  --color-emerald-200: #14532d;
+  --color-emerald-100: #0f3f22;
+
+  /* ---- Semantic & secondary accent families -----------------------------
+     These keep their solid -500/-600 (used for buttons/borders/tint fills),
+     but their LIGHT text shades (-200/-300/-400) are darkened so status
+     badges like `text-amber-300 bg-amber-500/20` stay readable on the light
+     tint. Without this, pale-on-pale badges fail contrast in light mode.      */
+  --color-amber-400: #9a4a06;
+  --color-amber-300: #9a4a06; /* was pale yellow -> dark amber for text */
+  --color-amber-200: #7c3a05;
+
+  --color-rose-400: #be123c;
+  --color-rose-300: #be123c; /* was pale pink -> dark rose for text */
+  --color-rose-200: #9f1239;
+
+  --color-red-400: #b91c1c;
+  --color-red-300: #b91c1c;
+  --color-red-200: #991b1b;
+
+  --color-blue-400: #1d4ed8;
+  --color-blue-300: #1d4ed8;
+  --color-blue-200: #1e40af;
+
+  --color-sky-400: #0369a1;
+  --color-sky-300: #0369a1;
+  --color-sky-200: #075985;
+
+  --color-teal-400: #0f766e;
+  --color-teal-300: #0f766e;
+  --color-teal-200: #115e59;
+
+  --color-indigo-400: #4338ca;
+  --color-indigo-300: #4338ca;
+  --color-indigo-200: #3730a3;
+
+  --color-purple-400: #7e22ce;
+  --color-purple-300: #7e22ce;
+  --color-purple-200: #6b21a8;
+
+  /* ---- Dark TINT-SURFACE shades -> light tints ---------------------------
+     Many panels/badges use very dark accent shades (-950/-900) as their
+     BACKGROUND (e.g. bg-amber-950/90 for the advisory banner, from-rose-950
+     gradient heroes, bg-indigo-950/40 cards). These are backgrounds, not text,
+     and must become LIGHT in light mode so the (now dark) text on them reads.  */
+  --color-amber-950: #fef3e2;
+  --color-amber-900: #fde8c8;
+  --color-rose-950: #ffe7ec;
+  --color-rose-900: #ffd6de;
+  --color-red-950: #fee7e7;
+  --color-red-900: #fdd6d6;
+  --color-sky-950: #e2f2fd;
+  --color-sky-900: #cee8fb;
+  --color-blue-950: #e4ecfd;
+  --color-blue-900: #d3e0fb;
+  --color-indigo-950: #e7e7fc;
+  --color-indigo-900: #dcdcfb;
+  --color-purple-950: #f3e6fd;
+  --color-purple-900: #ecd8fc;
+  --color-teal-950: #dff5f1;
+  --color-teal-900: #c9efe8;
+}
+
+/* Selection color stays legible in both themes */
+html.light ::selection {
+  background-color: #0f766e;
+  color: #ffffff;
+}
+
+/* -----------------------------------------------------------------------------
+   Light-mode legibility guard for literal `text-white`
+   -----------------------------------------------------------------------------
+   ~789 `text-white` usages exist. Most are correct in BOTH themes because they
+   sit on a saturated colored background (buttons, badges, gradients). But where
+   `text-white` sits on an app *surface* (which is now light), it would become
+   white-on-white. `white` is a literal, not a theme token, so we can't remap it.
+
+   Fix: in light mode, `.text-white` defaults to dark ink, and we then RE-ASSERT
+   white wherever it co-occurs with a saturated colored background or gradient
+   utility (those elements stay dark enough for white text in light mode too).
+   This keeps buttons/badges correct while fixing white-on-surface text.
+   --------------------------------------------------------------------------- */
+html.light .text-white {
+  color: #0f172a; /* dark ink fallback on light surfaces */
+}
+
+/* Re-assert white on saturated colored backgrounds & gradients (buttons/badges) */
+html.light .text-white.bg-indigo-500,
+html.light .text-white.bg-indigo-600,
+html.light .text-white.bg-indigo-700,
+html.light .text-white.bg-emerald-500,
+html.light .text-white.bg-emerald-600,
+html.light .text-white.bg-emerald-700,
+html.light .text-white.bg-cyan-500,
+html.light .text-white.bg-cyan-600,
+html.light .text-white.bg-cyan-700,
+html.light .text-white.bg-rose-500,
+html.light .text-white.bg-rose-600,
+html.light .text-white.bg-red-500,
+html.light .text-white.bg-red-600,
+html.light .text-white.bg-amber-500,
+html.light .text-white.bg-amber-600,
+html.light .text-white.bg-sky-500,
+html.light .text-white.bg-sky-600,
+html.light .text-white.bg-teal-500,
+html.light .text-white.bg-teal-600,
+html.light .text-white.bg-purple-500,
+html.light .text-white.bg-purple-600,
+html.light .text-white.bg-slate-600,
+html.light .text-white.bg-slate-700 {
+  color: #ffffff;
+}
+
+/* Very light neutral text utility used as "bright text on dark" -> dark ink. */
+html.light .text-slate-50 {
+  color: #0f172a;
+}
+
+/* -----------------------------------------------------------------------------
+   Hero gradient banners in light mode
+   -----------------------------------------------------------------------------
+   Several headers use gradients built from slate-900/950 (+ accent -950) tokens
+   with white/light text. Under the token remap those slate stops already flip to
+   light surfaces; the accent -950 stops are remapped to light tints above. So
+   these banners become LIGHT in light mode — consistent with the rest of the
+   theme. The `.text-white` fallback (dark ink) then makes their headings/body
+   readable automatically. Nothing else needed here; dark mode is unaffected.
+   --------------------------------------------------------------------------- */
+
+/* Translucent white overlays (bg-white/5|10|20) only make sense on dark. In
+   light mode, turn them into subtle dark-tinted panels so their content reads. */
+html.light .bg-white\/5,
+html.light .bg-white\/10,
+html.light .bg-white\/20 {
+  background-color: rgb(15 23 42 / 0.05) !important;
+}
+/* Text sitting inside those overlays: ensure dark ink. */
+html.light .bg-white\/5 .text-white,
+html.light .bg-white\/10 .text-white,
+html.light .bg-white\/20 .text-white {
+  color: #0f172a;
+}
+
+/* Light-accent body text shades used on dark heroes (text-indigo-100/-200,
+   text-slate-200/-300 as "muted light") already resolve to dark ink via the
+   token remap, so they read on the now-light banners. */
+
+/* -----------------------------------------------------------------------------
+   Hover states: `hover:text-white` in light mode
+   -----------------------------------------------------------------------------
+   Many buttons/tabs/close-icons use `hover:text-white` for their hover state.
+   On light surfaces that turns the label white-on-white (invisible) on hover.
+   In light mode, resolve the hover color to dark ink instead — EXCEPT where the
+   element also gets a saturated/dark colored hover background (there white is
+   still correct). Those exceptions are re-asserted below.
+   --------------------------------------------------------------------------- */
+html.light .hover\:text-white:hover {
+  color: #0f172a; /* dark ink on hover for light surfaces */
+}
+
+/* Re-assert white-on-hover where the hover background is a saturated/dark color
+   (buttons that darken on hover keep readable white text). */
+html.light .hover\:text-white.hover\:bg-indigo-500:hover,
+html.light .hover\:text-white.hover\:bg-indigo-600:hover,
+html.light .hover\:text-white.hover\:bg-indigo-700:hover,
+html.light .hover\:text-white.hover\:bg-emerald-500:hover,
+html.light .hover\:text-white.hover\:bg-emerald-600:hover,
+html.light .hover\:text-white.hover\:bg-emerald-700:hover,
+html.light .hover\:text-white.hover\:bg-cyan-500:hover,
+html.light .hover\:text-white.hover\:bg-cyan-600:hover,
+html.light .hover\:text-white.hover\:bg-rose-500:hover,
+html.light .hover\:text-white.hover\:bg-rose-600:hover,
+html.light .hover\:text-white.hover\:bg-red-600:hover,
+html.light .hover\:text-white.hover\:bg-amber-600:hover,
+html.light .hover\:text-white.hover\:bg-sky-600:hover,
+html.light .hover\:text-white.hover\:bg-teal-600:hover,
+html.light .hover\:text-white.hover\:bg-purple-600:hover {
+  color: #ffffff;
+}
+
+/* `group-hover:text-white` (parent-hover highlights child text) -> dark ink in
+   light mode so it doesn't vanish on the light surface. */
+html.light .group:hover .group-hover\:text-white {
+  color: #0f172a;
+}
+
+/* ---------------------------------------------------------------------------
+   LIGHT MODE — accent "tinted" action buttons safety net.
+   Several action buttons use a very dark accent shade AT LOW ALPHA as their
+   background (e.g. `bg-indigo-950/80`, `bg-rose-950/80`, `bg-cyan-950/80`).
+   When the underlying token is remapped to a light tint, the /80 alpha can
+   still composite murky on some GPUs/browsers. Pin these specific button
+   backgrounds to a clean light tint with a readable dark-accent label so they
+   never render as dark chips in light mode. Scoped under html.light only, so
+   dark mode is completely unaffected.
+   --------------------------------------------------------------------------- */
+html.light .bg-indigo-950\/80 {
+  background-color: #eef0fe !important;
+}
+html.light .bg-indigo-950\/80:hover,
+html.light .hover\:bg-indigo-900:hover {
+  background-color: #e0e2fb !important;
+}
+html.light .bg-rose-950\/80 {
+  background-color: #fdeef1 !important;
+}
+html.light .bg-rose-950\/80:hover,
+html.light .hover\:bg-rose-900:hover {
+  background-color: #fbdde3 !important;
+}
+html.light .bg-cyan-950\/80 {
+  background-color: #e7f7f3 !important;
+}
+html.light .bg-cyan-950\/80:hover,
+html.light .hover\:bg-cyan-900:hover {
+  background-color: #d3f0e9 !important;
+}
+html.light .bg-emerald-950\/80,
+html.light .bg-emerald-950\/60,
+html.light .bg-emerald-950\/40 {
+  background-color: #e9f7ee !important;
+}
+html.light .bg-amber-950\/80,
+html.light .bg-amber-950\/60,
+html.light .bg-amber-950\/40 {
+  background-color: #fbf1e0 !important;
+}
+html.light .bg-teal-950\/80,
+html.light .bg-teal-950\/60,
+html.light .bg-teal-950\/40 {
+  background-color: #e2f5f1 !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Wide data tables — always-visible horizontal scroll affordance.
+   Applied to horizontally-scrollable table wrappers so users can tell there
+   are more columns to the right even before they scroll. Combines:
+     1. An always-visible, styled horizontal scrollbar (not hover-only).
+     2. A subtle right-edge fade hint that more content exists off-screen.
+   Works in both dark and light themes (uses theme tokens for the fade).
+   --------------------------------------------------------------------------- */
+.table-scroll-x {
+  overflow-x: auto;
+  /* Firefox: keep a thin, always-present scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-slate-600) transparent;
+  position: relative;
+}
+/* WebKit/Blink (Chrome, Edge, Safari): force the horizontal bar to show */
+.table-scroll-x::-webkit-scrollbar {
+  height: 10px;
+}
+.table-scroll-x::-webkit-scrollbar-track {
+  background: transparent;
+}
+.table-scroll-x::-webkit-scrollbar-thumb {
+  background-color: var(--color-slate-600);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.table-scroll-x::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-slate-500);
+}

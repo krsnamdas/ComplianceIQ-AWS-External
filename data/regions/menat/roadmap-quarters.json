@@ -1,0 +1,56 @@
+[
+  {
+    "id": "2026-Q4",
+    "label": "Q4 2026",
+    "year": 2026,
+    "period": "Oct - Dec 2026"
+  },
+  {
+    "id": "2027-Q1",
+    "label": "Q1 2027",
+    "year": 2027,
+    "period": "Jan - Mar 2027"
+  },
+  {
+    "id": "2027-Q2",
+    "label": "Q2 2027",
+    "year": 2027,
+    "period": "Apr - Jun 2027"
+  },
+  {
+    "id": "2027-Q3",
+    "label": "Q3 2027",
+    "year": 2027,
+    "period": "Jul - Sep 2027"
+  },
+  {
+    "id": "2027-Q4",
+    "label": "Q4 2027",
+    "year": 2027,
+    "period": "Oct - Dec 2027"
+  },
+  {
+    "id": "2028-Q1",
+    "label": "Q1 2028",
+    "year": 2028,
+    "period": "Jan - Mar 2028"
+  },
+  {
+    "id": "2028-Q2",
+    "label": "Q2 2028",
+    "year": 2028,
+    "period": "Apr - Jun 2028"
+  },
+  {
+    "id": "2028-Q3",
+    "label": "Q3 2028",
+    "year": 2028,
+    "period": "Jul - Sep 2028"
+  },
+  {
+    "id": "2028-Q4",
+    "label": "Q4 2028",
+    "year": 2028,
+    "period": "Oct - Dec 2028"
+  }
+]

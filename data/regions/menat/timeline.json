@@ -1,0 +1,2233 @@
+[
+  {
+    "id": "evt-qatar-ncsa-ncf-deadline",
+    "regulationId": "qa-ncsa-nia",
+    "regulationCode": "Qatar NCF v2.0",
+    "title": "National Cyber Security Framework (NCF v2.0) Critical Infrastructure Certification Deadline",
+    "authority": "National Cyber Security Agency (NCSA)",
+    "authorityShort": "NCSA",
+    "countryId": "qatar",
+    "countryName": "Qatar",
+    "countryFlag": "🇶🇦",
+    "macroRegion": "Middle East",
+    "category": "tech_cyber",
+    "categoryLabel": "Cybersecurity & Critical Infrastructure",
+    "targetSectors": [
+      "Government",
+      "Utilities",
+      "Telco",
+      "Banking",
+      "Oil & Gas",
+      "Critical Infrastructure"
+    ],
+    "startDate": "2025-10-01",
+    "transitionStartDate": "2026-01-01",
+    "deadlineDate": "2026-10-31",
+    "eventType": "Compliance Audit Window",
+    "status": "Imminent (<90 Days)",
+    "urgency": "Critical",
+    "description": "Mandatory deadline for all designated Critical Information Infrastructure (CII) operators in Qatar to submit formal third-party audit certifications against NCF v2.0 baseline controls to NCSA portal.",
+    "gracePeriodSummary": "10-month compliance runway concluding on October 31, 2026.",
+    "penaltiesSummary": "Revocation of CII operating authorization, mandatory state inspection, and fines up to QAR 2,000,000 under National Cyber Security Decree.",
+    "milestones": [
+      {
+        "label": "NCF v2.0 Implementation Notice Issued",
+        "date": "2025-10-01",
+        "completed": true
+      },
+      {
+        "label": "Self-Assessment Gap Analysis Submission",
+        "date": "2026-04-15",
+        "completed": true
+      },
+      {
+        "label": "Accredited External Audit Completion",
+        "date": "2026-09-15",
+        "completed": true
+      },
+      {
+        "label": "Final Certification Dossier Upload",
+        "date": "2026-10-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Finalize independent verification of all 26 NCSA Priority 1 Controls",
+      "Ensure 24/7 Security Operations Center (SOC) telemetry feeds to National CERT",
+      "Upload Chief Information Security Officer (CISO) sign-off on risk mitigation plans",
+      "Document dual-homed OT/ICS segmentation for industrial systems"
+    ],
+    "officialReference": "NCSA Circular 14/2025 on CII Compliance Milestones",
+    "officialUrl": "https://www.ncsa.gov.qa/en/regulations-standards"
+  },
+  {
+    "id": "evt-israel-boi-361-audit",
+    "standalone": true,
+    "regulationCode": "BOI Directive 361",
+    "title": "Directive 361: Third-Party Cloud & Supply Chain Cybersecurity Assessment Audit",
+    "authority": "Bank of Israel (BOI)",
+    "authorityShort": "BOI",
+    "countryId": "israel",
+    "countryName": "Israel",
+    "countryFlag": "🇮🇱",
+    "macroRegion": "Middle East",
+    "category": "tech_cloud",
+    "categoryLabel": "Cloud & Hyperscalers",
+    "targetSectors": [
+      "Banking",
+      "Financial Services",
+      "Payments",
+      "Cloud & Hyperscalers"
+    ],
+    "startDate": "2025-11-01",
+    "transitionStartDate": "2026-02-01",
+    "deadlineDate": "2026-10-31",
+    "eventType": "Compliance Audit Window",
+    "status": "Imminent (<90 Days)",
+    "urgency": "High",
+    "description": "Supervised banking corporations and clearing houses must submit comprehensive cyber supply-chain assurance audits covering outsourced SaaS, PaaS, and offshore FinTech integrations.",
+    "gracePeriodSummary": "Annual compliance review cycle ending October 31, 2026.",
+    "penaltiesSummary": "Capital adequacy surcharges, restriction of new digital financial product launches, and administrative fines.",
+    "milestones": [
+      {
+        "label": "Directive 361 Supply Chain Annex Issued",
+        "date": "2025-11-01",
+        "completed": true
+      },
+      {
+        "label": "Vendor Tiering & Exposure Mapping",
+        "date": "2026-05-30",
+        "completed": true
+      },
+      {
+        "label": "External Cloud Provider Penetration Reports",
+        "date": "2026-09-30",
+        "completed": true
+      },
+      {
+        "label": "Board Cyber Sub-Committee Approval",
+        "date": "2026-10-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Audit contractual right-to-audit clauses with all Level-1 cloud vendors",
+      "Verify disaster recovery RPO/RTO metrics in multi-region failover tests",
+      "Submit updated software bill of materials (SBOM) for core banking apps"
+    ],
+    "officialReference": "Bank of Israel Banking Supervision Directive 361 (Update 2025/2)",
+    "officialUrl": "https://www.boi.org.il/en/banking-supervision/directives/"
+  },
+  {
+    "id": "evt-uae-nesa-annual-audit",
+    "regulationId": "uae-desc-ias",
+    "regulationCode": "NESA IAS / UAE IA",
+    "title": "UAE Information Assurance Standards (IAS): Tier-1 Critical Entities Compliance Submission",
+    "authority": "UAE Cybersecurity Council / TDRA",
+    "authorityShort": "CSC / TDRA",
+    "countryId": "uae",
+    "countryName": "United Arab Emirates",
+    "countryFlag": "🇦🇪",
+    "macroRegion": "Middle East",
+    "category": "tech_cyber",
+    "categoryLabel": "Cybersecurity & Critical Infrastructure",
+    "targetSectors": [
+      "Government",
+      "Telco",
+      "Banking",
+      "Oil & Gas",
+      "Utilities",
+      "Critical Infrastructure"
+    ],
+    "startDate": "2025-12-01",
+    "transitionStartDate": "2026-03-01",
+    "deadlineDate": "2026-11-15",
+    "eventType": "Compliance Audit Window",
+    "status": "Imminent (<90 Days)",
+    "urgency": "Critical",
+    "description": "Annual statutory verification deadline for federal government entities and critical national infrastructure operators to upload evidence of full compliance across all 188 NESA IAS controls.",
+    "gracePeriodSummary": "Annual audit submission cycle due November 15, 2026.",
+    "penaltiesSummary": "Escalation to Federal Cabinet, loss of public sector contract eligibility, and direct corrective intervention.",
+    "milestones": [
+      {
+        "label": "Annual IAS Assessment Toolkit Dispatched",
+        "date": "2025-12-01",
+        "completed": true
+      },
+      {
+        "label": "Internal Control Self-Audit Completed",
+        "date": "2026-06-30",
+        "completed": true
+      },
+      {
+        "label": "Remediation of High-Risk Findings",
+        "date": "2026-10-15",
+        "completed": true
+      },
+      {
+        "label": "National Cyber Security Council Submission",
+        "date": "2026-11-15",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Complete evidence collection for all M1 and M2 mandatory controls",
+      "Validate cryptographic protection of UAE citizen data in transit and at rest",
+      "Conduct third-party red teaming simulation on external perimeter"
+    ],
+    "officialReference": "UAE CSC Executive Order on National Information Assurance Reporting",
+    "officialUrl": "https://csc.gov.ae/"
+  },
+  {
+    "id": "evt-morocco-0908-consultation",
+    "regulationId": "morocco-cndp-0908",
+    "regulationCode": "Morocco Law 09-08 Reform",
+    "title": "Public Consultation Closes on Modernization of Personal Data Protection Law (Law No. 09-08)",
+    "authority": "Commission Nationale de contrôle de la protection des Données à caractère Personnel (CNDP)",
+    "authorityShort": "CNDP",
+    "countryId": "morocco",
+    "countryName": "Morocco",
+    "countryFlag": "🇲🇦",
+    "macroRegion": "North Africa, The Sahel, & Horn of Africa",
+    "category": "tech_data_privacy",
+    "categoryLabel": "Data Privacy & Cross-Border Governance",
+    "targetSectors": [
+      "Banking",
+      "Telco",
+      "Retail & E-Commerce",
+      "Cloud & Hyperscalers",
+      "Healthcare"
+    ],
+    "startDate": "2026-06-01",
+    "deadlineDate": "2026-11-15",
+    "eventType": "Public Consultation",
+    "status": "In Consultation",
+    "urgency": "Medium",
+    "description": "Final opportunity for multinational enterprises, cloud hyperscalers, and domestic tech companies to submit formal comments on the draft reforms to Law No. 09-08 aligning Morocco with EU GDPR standards.",
+    "gracePeriodSummary": "Consultation window ends November 15, 2026 before submission to Moroccan Parliament.",
+    "milestones": [
+      {
+        "label": "Draft Bill Released by CNDP",
+        "date": "2026-06-01",
+        "completed": true
+      },
+      {
+        "label": "Industry Stakeholder Hearings in Rabat",
+        "date": "2026-09-10",
+        "completed": true
+      },
+      {
+        "label": "Public Written Submissions Deadline",
+        "date": "2026-11-15",
+        "completed": false
+      },
+      {
+        "label": "Parliamentary Review Expected",
+        "date": "2027-02-01",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Review draft requirements regarding mandatory Data Protection Officer (DPO) appointments",
+      "Analyze proposed rules for cross-border data transfer to non-adequate jurisdictions",
+      "Submit written stakeholder brief to CNDP consultation secretariat"
+    ],
+    "officialReference": "CNDP Notice No. 2026/04 on Legislative Modernization",
+    "officialUrl": "https://www.cndp.ma/"
+  },
+  {
+    "id": "evt-jordan-pdpl-grace-expiry",
+    "regulationId": "jordan-pdpl-24",
+    "regulationCode": "Jordan PDPL Law 24/2023",
+    "title": "Personal Data Protection Law (Law No. 24 of 2023): Final 1-Year Grace Period Expiry",
+    "authority": "Ministry of Digital Economy and Entrepreneurship (MoDEE) & Data Protection Unit",
+    "authorityShort": "MoDEE",
+    "countryId": "jordan",
+    "countryName": "Jordan",
+    "countryFlag": "🇯🇴",
+    "macroRegion": "Middle East",
+    "category": "tech_data_privacy",
+    "categoryLabel": "Data Privacy & Cross-Border Governance",
+    "targetSectors": [
+      "Banking",
+      "Telco",
+      "Healthcare",
+      "Retail & E-Commerce",
+      "Digital Tech Startups"
+    ],
+    "startDate": "2023-09-17",
+    "transitionStartDate": "2024-03-17",
+    "deadlineDate": "2026-11-17",
+    "eventType": "Grace Period Expiry",
+    "status": "Imminent (<90 Days)",
+    "urgency": "Critical",
+    "description": "The statutory transition window for all public and private entities processing personal data of Jordanian residents expires. Unlicensed commercial processing and unconsented data transfers become strictly illegal.",
+    "gracePeriodSummary": "Statutory grace period concludes November 17, 2026.",
+    "penaltiesSummary": "Fines up to JOD 100,000, compensation claims, and suspension of digital business permits under Article 38.",
+    "milestones": [
+      {
+        "label": "Law No. 24 Published in Official Gazette",
+        "date": "2023-09-17",
+        "completed": true
+      },
+      {
+        "label": "Executive Regulations Promulgated",
+        "date": "2024-03-17",
+        "completed": true
+      },
+      {
+        "label": "Registration of Data Controllers Opened",
+        "date": "2025-05-01",
+        "completed": true
+      },
+      {
+        "label": "End of Grace Period & Full Enforcement",
+        "date": "2026-11-17",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Appoint and register statutory Data Protection Officer with MoDEE",
+      "Update user-facing privacy notices and explicit consent workflows",
+      "Audit all marketing databases for lawful consent records",
+      "Implement data subject rights request mechanism (access, erasure, rectification)"
+    ],
+    "officialReference": "Official Gazette No. 5881, Law No. 24 of 2023",
+    "officialUrl": "https://www.modee.gov.jo/"
+  },
+  {
+    "id": "evt-tunisia-bct-continuity-simulation",
+    "standalone": true,
+    "regulationCode": "BCT Circular 2020-11",
+    "title": "Central Bank of Tunisia (BCT) Sector-Wide Cyber Resilience & Payments Failover Simulation",
+    "authority": "Banque Centrale de Tunisie (BCT)",
+    "authorityShort": "BCT",
+    "countryId": "tunisia",
+    "countryName": "Tunisia",
+    "countryFlag": "🇹🇳",
+    "macroRegion": "North Africa, The Sahel, & Horn of Africa",
+    "category": "tech_operational_resilience",
+    "categoryLabel": "Operational Resilience & Business Continuity",
+    "targetSectors": [
+      "Banking",
+      "Payments",
+      "Financial Services"
+    ],
+    "startDate": "2026-03-01",
+    "deadlineDate": "2026-11-20",
+    "eventType": "Compliance Audit Window",
+    "status": "Imminent (<90 Days)",
+    "urgency": "High",
+    "description": "All licensed commercial banks and electronic payment switches in Tunisia must execute live failover to secondary disaster recovery sites during the coordinated national financial simulation.",
+    "gracePeriodSummary": "Simulation cycle deadline November 20, 2026.",
+    "penaltiesSummary": "BCT disciplinary sanctions, restrictions on interbank payment operations, and direct supervisory oversight.",
+    "milestones": [
+      {
+        "label": "BCT Annual Exercise Protocol Issued",
+        "date": "2026-03-01",
+        "completed": true
+      },
+      {
+        "label": "Pre-simulation Architecture Validated",
+        "date": "2026-08-30",
+        "completed": true
+      },
+      {
+        "label": "Live Core Banking Failover Execution",
+        "date": "2026-11-20",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Demonstrate Recovery Point Objective (RPO) under 15 minutes for payment ledgers",
+      "Verify alternate satellite communications link between HQ and secondary data center",
+      "Submit comprehensive forensic resilience report signed by Board of Directors"
+    ],
+    "officialReference": "BCT Circular 2020-11 & Exercise Directive 2026",
+    "officialUrl": "https://www.bct.gov.tn/"
+  },
+  {
+    "id": "evt-ksa-sama-open-banking-deadline",
+    "regulationId": "ksa-sama-csf",
+    "regulationCode": "SAMA Open Banking v2",
+    "title": "SAMA Open Banking Payment Initiation & FAPI 2.0 Security Architecture Mandatory Go-Live",
+    "authority": "Saudi Central Bank (SAMA)",
+    "authorityShort": "SAMA",
+    "countryId": "ksa",
+    "countryName": "Saudi Arabia",
+    "countryFlag": "🇸🇦",
+    "macroRegion": "Middle East",
+    "category": "tech_fintech_payments",
+    "categoryLabel": "FinTech, Payments & Crypto-Assets",
+    "targetSectors": [
+      "Banking",
+      "Fintech",
+      "Payments",
+      "Financial Services"
+    ],
+    "startDate": "2025-06-01",
+    "transitionStartDate": "2026-01-15",
+    "deadlineDate": "2026-11-30",
+    "eventType": "Enforcement Deadline",
+    "status": "Imminent (<90 Days)",
+    "urgency": "Critical",
+    "description": "Mandatory go-live for all Tier-1 and Tier-2 Saudi commercial banks to open production APIs for Payment Initiation Services (PIS) compliant with Financial-grade API (FAPI 2.0) and mutual TLS (mTLS).",
+    "gracePeriodSummary": "Phase 2 implementation window ending November 30, 2026.",
+    "penaltiesSummary": "Regulatory fines up to SAR 10,000,000 under the Banking Control Law and public supervisory notices.",
+    "milestones": [
+      {
+        "label": "SAMA PIS Technical Standard Released",
+        "date": "2025-06-01",
+        "completed": true
+      },
+      {
+        "label": "Sandbox Conformance Testing",
+        "date": "2026-03-15",
+        "completed": true
+      },
+      {
+        "label": "Production Pilot with Selected FinTechs",
+        "date": "2026-08-01",
+        "completed": true
+      },
+      {
+        "label": "Full Production Mandate & Commercial SLA",
+        "date": "2026-11-30",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Deploy OAuth 2.0 Authorization Server with FAPI 2.0 Security Profile",
+      "Implement strict mTLS with SAMA-approved PKI certificates",
+      "Ensure 99.95% API uptime SLA with real-time health dashboard accessible to SAMA",
+      "Integrate automated customer consent withdrawal mechanisms within mobile banking app"
+    ],
+    "officialReference": "SAMA Open Banking Circular 450123/2025",
+    "officialUrl": "https://www.sama.gov.sa/en-US/Laws/Pages/CyberSecurityRules.aspx"
+  },
+  {
+    "id": "evt-turkiye-spk-casp-deadline",
+    "regulationId": "tr-spk-crypto-7518",
+    "regulationCode": "Law No. 7518 / SPK",
+    "title": "SPK Crypto Asset Service Providers (CASP): Final TÜBİTAK Cold Storage Audit & Licensing",
+    "authority": "Capital Markets Board of Türkiye (SPK)",
+    "authorityShort": "SPK",
+    "countryId": "turkiye",
+    "countryName": "Türkiye",
+    "countryFlag": "🇹🇷",
+    "macroRegion": "Middle East",
+    "category": "tech_fintech_payments",
+    "categoryLabel": "FinTech, Payments & Crypto-Assets",
+    "targetSectors": [
+      "Fintech",
+      "Financial Services",
+      "Digital Tech Startups"
+    ],
+    "startDate": "2024-07-28",
+    "transitionStartDate": "2025-01-01",
+    "deadlineDate": "2026-11-30",
+    "eventType": "Enforcement Deadline",
+    "status": "Imminent (<90 Days)",
+    "urgency": "Critical",
+    "description": "Final deadline for provisional crypto asset exchanges operating in Türkiye to complete TÜBİTAK technical security validation of cold storage vaults and submit definitive SPK license applications.",
+    "gracePeriodSummary": "Final day of the transition licensing framework established under Law 7518.",
+    "penaltiesSummary": "Immediate DNS blocking by BTK, asset freeze orders, and criminal liability for operating an unauthorized exchange.",
+    "milestones": [
+      {
+        "label": "Law No. 7518 Enacted in Official Gazette",
+        "date": "2024-07-28",
+        "completed": true
+      },
+      {
+        "label": "Provisional List of Operating CASPs Published",
+        "date": "2024-10-01",
+        "completed": true
+      },
+      {
+        "label": "Capital Increase to 50M TRY Completed",
+        "date": "2025-06-30",
+        "completed": true
+      },
+      {
+        "label": "Final Licensing Dossier & TÜBİTAK Audit",
+        "date": "2026-11-30",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Verify minimum 50,000,000 TRY paid-in capital verified by statutory auditor",
+      "Obtain TÜBİTAK physical security approval for multi-signature cold storage keys",
+      "Establish client fiat funds isolation in licensed domestic Turkish deposit banks",
+      "Implement MASAK-compliant automated AML transaction monitoring thresholds"
+    ],
+    "officialReference": "SPK Communiqué VII-128.8 on Principles Regarding Crypto Asset Service Providers",
+    "officialUrl": "https://spk.gov.tr/"
+  },
+  {
+    "id": "evt-oman-cbo-bm1188-audit",
+    "regulationId": "oman-cbo-resilience",
+    "regulationCode": "CBO Circular BM 1188",
+    "title": "CBO Cybersecurity & SWIFT Customer Security Programme (CSP) Independent Verification",
+    "authority": "Central Bank of Oman (CBO)",
+    "authorityShort": "CBO",
+    "countryId": "oman",
+    "countryName": "Oman",
+    "countryFlag": "🇴🇲",
+    "macroRegion": "Middle East",
+    "category": "tech_cyber",
+    "categoryLabel": "Cybersecurity & Critical Infrastructure",
+    "targetSectors": [
+      "Banking",
+      "Payments",
+      "Financial Services"
+    ],
+    "startDate": "2026-01-01",
+    "deadlineDate": "2026-11-30",
+    "eventType": "Compliance Audit Window",
+    "status": "Imminent (<90 Days)",
+    "urgency": "High",
+    "description": "Licensed banking institutions and payment service providers in Oman must complete their mandatory annual external SWIFT CSP assessment and submit their CBO cyber resilience compliance attestation.",
+    "gracePeriodSummary": "Annual reporting cutoff November 30, 2026.",
+    "penaltiesSummary": "Fines, mandatory public disclosure of non-compliance, and restrictions on international FX settlement.",
+    "milestones": [
+      {
+        "label": "CBO Circular BM 1188 Guidance Released",
+        "date": "2026-01-01",
+        "completed": true
+      },
+      {
+        "label": "Mid-Year Vulnerability Remediations",
+        "date": "2026-06-30",
+        "completed": true
+      },
+      {
+        "label": "SWIFT KYC-SA Independent Assessment Upload",
+        "date": "2026-11-30",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Complete external penetration testing of SWIFT gateway segment",
+      "Enforce hardware-token multi-factor authentication for all wire transfer authorizations",
+      "Submit CBO Cyber Resilience Compliance Matrix signed by internal audit committee"
+    ],
+    "officialReference": "CBO Banking Supervision Circular BM 1188",
+    "officialUrl": "https://cbo.gov.om/"
+  },
+  {
+    "id": "evt-uae-difc-ai-autonomous-deadline",
+    "regulationId": "uae-difc-dp-2020",
+    "regulationCode": "DIFC DP Law 2020 (Amended)",
+    "title": "DIFC Data Protection Law: Mandatory AI Autonomous Processing Impact Assessments (AIA)",
+    "authority": "DIFC Commissioner of Data Protection",
+    "authorityShort": "DIFC DPA",
+    "countryId": "uae",
+    "countryName": "United Arab Emirates",
+    "countryFlag": "🇦🇪",
+    "macroRegion": "Middle East",
+    "category": "tech_ai",
+    "categoryLabel": "Artificial Intelligence & Autonomous Systems",
+    "targetSectors": [
+      "Banking",
+      "Financial Services",
+      "Insurance",
+      "Cloud & Hyperscalers",
+      "Digital Tech Startups"
+    ],
+    "startDate": "2026-01-01",
+    "transitionStartDate": "2026-06-01",
+    "deadlineDate": "2026-12-01",
+    "eventType": "Enforcement Deadline",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "High",
+    "description": "Companies operating within Dubai International Financial Centre (DIFC) deploying automated decision-making or generative AI models on personal data must document AI ethical safeguards and human-in-the-loop controls.",
+    "gracePeriodSummary": "6-month transition period concludes December 1, 2026.",
+    "penaltiesSummary": "Statutory fines up to USD 100,000 per violation and directives to suspend algorithmic processing systems.",
+    "milestones": [
+      {
+        "label": "DIFC AI Autonomous Processing Guidelines Issued",
+        "date": "2026-01-01",
+        "completed": true
+      },
+      {
+        "label": "Algorithmic Impact Assessment Tool Launched",
+        "date": "2026-06-01",
+        "completed": true
+      },
+      {
+        "label": "Mandatory Compliance & AIA Register Filing",
+        "date": "2026-12-01",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Document AI training dataset provenance and copyright/privacy clearances",
+      "Implement algorithmic bias testing for credit scoring, hiring, and underwriting models",
+      "Establish verifiable human override workflow for all automated decisions impacting customers",
+      "Update privacy disclosures to explain logic involved in automated profiling"
+    ],
+    "officialReference": "DIFC Commissioner Guidance on Autonomous and AI Processing",
+    "officialUrl": "https://www.difc.ae/business/laws-regulations/data-protection/"
+  },
+  {
+    "id": "evt-bahrain-cbb-vasp-compliance",
+    "regulationId": "bh-cbb-om",
+    "regulationCode": "CBB Rulebook Volume 6",
+    "title": "CBB Crypto-Asset (CRA) Module: Enhanced Capital Adequacy & Cold-Storage Compliance",
+    "authority": "Central Bank of Bahrain (CBB)",
+    "authorityShort": "CBB",
+    "countryId": "bahrain",
+    "countryName": "Bahrain",
+    "countryFlag": "🇧🇭",
+    "macroRegion": "Middle East",
+    "category": "tech_fintech_payments",
+    "categoryLabel": "FinTech, Payments & Crypto-Assets",
+    "targetSectors": [
+      "Fintech",
+      "Financial Services",
+      "Banking"
+    ],
+    "startDate": "2025-09-01",
+    "transitionStartDate": "2026-03-01",
+    "deadlineDate": "2026-12-15",
+    "eventType": "Enforcement Deadline",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Critical",
+    "description": "All licensed Crypto-Asset Service Providers (CASPs) in Bahrain must satisfy revised capital adequacy ratios and store minimum 95% of client virtual assets in segregated institutional cold custody.",
+    "gracePeriodSummary": "Transition deadline December 15, 2026.",
+    "penaltiesSummary": "Suspension of Category 1-4 crypto licenses and formal administrative enforcement.",
+    "milestones": [
+      {
+        "label": "CBB CRA Module Revisions Promulgated",
+        "date": "2025-09-01",
+        "completed": true
+      },
+      {
+        "label": "Custodian Proof-of-Reserves Audit Required",
+        "date": "2026-06-30",
+        "completed": true
+      },
+      {
+        "label": "Full Compliance with Cold Storage Thresholds",
+        "date": "2026-12-15",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Ensure 95%+ client digital assets held in air-gapped multi-sig hardware security modules (HSMs)",
+      "Maintain minimum capital reserve buffer equivalent to 12 months operating expenses",
+      "Provide audited cryptographic proof-of-reserves with Merkle tree verification"
+    ],
+    "officialReference": "CBB Rulebook Volume 6 (Capital Markets), Module CRA",
+    "officialUrl": "https://www.cbb.gov.bh/laws-regulations/"
+  },
+  {
+    "id": "evt-ksa-nca-ecc-annual-mandate",
+    "regulationId": "ksa-ecc-1",
+    "regulationCode": "NCA ECC-1:2018",
+    "title": "NCA Essential Cybersecurity Controls: Annual National Compliance Portal Submission",
+    "authority": "National Cybersecurity Authority (NCA)",
+    "authorityShort": "NCA",
+    "countryId": "ksa",
+    "countryName": "Saudi Arabia",
+    "countryFlag": "🇸🇦",
+    "macroRegion": "Middle East",
+    "category": "tech_cyber",
+    "categoryLabel": "Cybersecurity & Critical Infrastructure",
+    "targetSectors": [
+      "Government",
+      "Banking",
+      "Oil & Gas",
+      "Telco",
+      "Utilities",
+      "Critical Infrastructure",
+      "Healthcare"
+    ],
+    "startDate": "2026-01-01",
+    "deadlineDate": "2026-12-15",
+    "eventType": "Compliance Audit Window",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Critical",
+    "description": "All government agencies and critical private sector organizations in Saudi Arabia must upload their 2026 audited compliance scorecards for ECC-1:2018 (114 controls across 5 domains) to the NCA Hasin platform.",
+    "gracePeriodSummary": "Annual statutory reporting deadline December 15, 2026.",
+    "penaltiesSummary": "Public reporting to Royal Court, supervisory audit interventions, and government procurement restrictions.",
+    "milestones": [
+      {
+        "label": "Hasin Portal Assessment Cycle Opened",
+        "date": "2026-01-01",
+        "completed": true
+      },
+      {
+        "label": "Internal Audit Review & Evidence Compilation",
+        "date": "2026-09-30",
+        "completed": true
+      },
+      {
+        "label": "Hasin Portal Final Evidence Submission",
+        "date": "2026-12-15",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Upload comprehensive audit evidence for all 114 ECC controls",
+      "Verify strict two-factor authentication on all administrative and privileged access sessions",
+      "Confirm real-time integration with National Cybersecurity Center (NCSC) threat feed",
+      "Ensure all business data backup archives are stored in air-gapped immutable media within KSA"
+    ],
+    "officialReference": "NCA ECC-1:2018 Compliance Directives",
+    "officialUrl": "https://www.nca.gov.sa/regulations-and-standards/ecc/"
+  },
+  {
+    "id": "evt-bahrain-cbb-pqc-inventory",
+    "regulationId": "bh-cbb-om",
+    "regulationCode": "CBB Circular 2024/PQC",
+    "title": "Central Bank of Bahrain: Post-Quantum Cryptography (PQC) Asset Inventory Submission",
+    "authority": "Central Bank of Bahrain (CBB)",
+    "authorityShort": "CBB",
+    "countryId": "bahrain",
+    "countryName": "Bahrain",
+    "countryFlag": "🇧🇭",
+    "macroRegion": "Middle East",
+    "category": "tech_space_quantum",
+    "categoryLabel": "Space & Post-Quantum Cryptography",
+    "targetSectors": [
+      "Banking",
+      "Payments",
+      "Financial Services",
+      "Fintech"
+    ],
+    "startDate": "2024-05-30",
+    "transitionStartDate": "2025-01-01",
+    "deadlineDate": "2026-12-31",
+    "eventType": "Enforcement Deadline",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "High",
+    "description": "Retail and wholesale banks licensed in Bahrain must finalize comprehensive inventory of cryptographic assets (RSA, ECC algorithms in PKI, VPNs, TLS endpoints) vulnerable to quantum computer decryption.",
+    "gracePeriodSummary": "Phase 1 inventory deadline December 31, 2026.",
+    "penaltiesSummary": "Supervisory remediation orders and mandatory engagement of external quantum readiness consultants.",
+    "milestones": [
+      {
+        "label": "CBB PQC Roadmap Circular Dispatched",
+        "date": "2024-05-30",
+        "completed": true
+      },
+      {
+        "label": "Cryptographic Discovery Tooling Deployed",
+        "date": "2025-09-30",
+        "completed": true
+      },
+      {
+        "label": "Comprehensive Cryptographic Inventory Filed",
+        "date": "2026-12-31",
+        "completed": false
+      },
+      {
+        "label": "Hybrid Key Exchange Pilot Implementations",
+        "date": "2027-12-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Catalog all legacy RSA-2048 and ECC certificates in core banking systems",
+      "Assess quantum vulnerability of long-term archived customer transaction records",
+      "Establish architectural plan for migrating to NIST-standardized algorithms (ML-KEM, ML-DSA)"
+    ],
+    "officialReference": "CBB Circular on Cryptographic Modernization and Post-Quantum Security",
+    "officialUrl": "https://www.cbb.gov.bh/laws-regulations/"
+  },
+  {
+    "id": "evt-ksa-sdaia-ai-ethics-deadline",
+    "regulationId": "ksa-ai-ethics",
+    "regulationCode": "SDAIA AI Ethics v1.1",
+    "title": "SDAIA AI Ethics Principles v1.1: Mandatory Algorithmic Audits for Enterprise Generative AI",
+    "authority": "Saudi Data & AI Authority (SDAIA)",
+    "authorityShort": "SDAIA",
+    "countryId": "ksa",
+    "countryName": "Saudi Arabia",
+    "countryFlag": "🇸🇦",
+    "macroRegion": "Middle East",
+    "category": "tech_ai",
+    "categoryLabel": "Artificial Intelligence & Autonomous Systems",
+    "targetSectors": [
+      "Government",
+      "Banking",
+      "Healthcare",
+      "Telco",
+      "Retail & E-Commerce",
+      "Cloud & Hyperscalers"
+    ],
+    "startDate": "2025-01-01",
+    "transitionStartDate": "2026-03-01",
+    "deadlineDate": "2026-12-31",
+    "eventType": "Enforcement Deadline",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "High",
+    "description": "Mandatory deadline for enterprises utilizing Generative AI models or algorithmic automation to file Algorithmic Impact Assessments (AIA) and verify non-discrimination and human oversight under SDAIA principles.",
+    "gracePeriodSummary": "Enterprise AI onboarding grace period ends December 31, 2026.",
+    "penaltiesSummary": "Fines under the Personal Data Protection Law and regulatory restriction of commercial AI application hosting.",
+    "milestones": [
+      {
+        "label": "SDAIA AI Ethics Principles v1.1 Published",
+        "date": "2023-12-01",
+        "completed": true
+      },
+      {
+        "label": "Pilot Verification with Public Sector Bodies",
+        "date": "2025-06-01",
+        "completed": true
+      },
+      {
+        "label": "Mandatory Commercial Enterprise Filing",
+        "date": "2026-12-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Conduct Algorithmic Impact Assessment (AIA) on all high-risk automated models",
+      "Verify watermarking on all AI-synthesized audio, imagery, or synthetic text",
+      "Establish human-in-the-loop review workflow for automated credit or employment decisions",
+      "Verify that training datasets do not violate KSA PDPL cross-border transfer restrictions"
+    ],
+    "officialReference": "SDAIA AI Ethics Principles Document v1.1",
+    "officialUrl": "https://sdaia.gov.sa/en/SDAIA/about/Documents/ai-ethics-principles-en.pdf",
+    "versionDiffId": "diff-ksa-pdpl"
+  },
+  {
+    "id": "evt-oman-pdpl-grace-expiry",
+    "regulationId": "om-pdpl-6",
+    "regulationCode": "Oman Royal Decree 6/2022",
+    "title": "Oman Personal Data Protection Law: Final Implementation Regulations Grace Period Expiration",
+    "authority": "Ministry of Transport, Communications and Information Technology (MTCIT)",
+    "authorityShort": "MTCIT",
+    "countryId": "oman",
+    "countryName": "Oman",
+    "countryFlag": "🇴🇲",
+    "macroRegion": "Middle East",
+    "category": "tech_data_privacy",
+    "categoryLabel": "Data Privacy & Cross-Border Governance",
+    "targetSectors": [
+      "Banking",
+      "Telco",
+      "Retail & E-Commerce",
+      "Healthcare",
+      "Cloud & Hyperscalers"
+    ],
+    "startDate": "2022-02-13",
+    "transitionStartDate": "2024-02-04",
+    "deadlineDate": "2026-12-31",
+    "eventType": "Grace Period Expiry",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Critical",
+    "description": "Final cutoff date for all organizations operating in the Sultanate of Oman to adjust their processing activities to conform fully with the Executive Regulations of the Personal Data Protection Law.",
+    "gracePeriodSummary": "Multi-year statutory extension ends December 31, 2026.",
+    "penaltiesSummary": "Fines up to OMR 500,000, confiscation of digital data stores, and revocation of commercial registrations.",
+    "milestones": [
+      {
+        "label": "Royal Decree 6/2022 Promulgated",
+        "date": "2022-02-13",
+        "completed": true
+      },
+      {
+        "label": "Executive Regulations Ministerial Decision Issued",
+        "date": "2024-02-04",
+        "completed": true
+      },
+      {
+        "label": "Final Compliance Grace Window",
+        "date": "2026-12-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Appoint qualified Data Protection Officer domiciled in Oman",
+      "Obtain MTCIT permits for international data transfer to foreign parent entities",
+      "Formulate comprehensive record of processing activities (RoPA) in Arabic and English",
+      "Establish data breach notification protocol (maximum 72 hours to MTCIT)"
+    ],
+    "officialReference": "MTCIT Ministerial Decision No. 34/2024 on Executive Regulations",
+    "officialUrl": "https://www.mtcit.gov.om/"
+  },
+  {
+    "id": "evt-kuwait-cbk-zero-trust-deadline",
+    "regulationId": "kuwait-cbk-cyber",
+    "regulationCode": "CBK Cybersecurity Framework",
+    "title": "CBK Cybersecurity Framework for Banks: Zero Trust Architecture & Micro-Segmentation Mandate",
+    "authority": "Central Bank of Kuwait (CBK)",
+    "authorityShort": "CBK",
+    "countryId": "kuwait",
+    "countryName": "Kuwait",
+    "countryFlag": "🇰🇼",
+    "macroRegion": "Middle East",
+    "category": "tech_cyber",
+    "categoryLabel": "Cybersecurity & Critical Infrastructure",
+    "targetSectors": [
+      "Banking",
+      "Financial Services",
+      "Payments"
+    ],
+    "startDate": "2025-01-01",
+    "transitionStartDate": "2025-06-01",
+    "deadlineDate": "2026-12-31",
+    "eventType": "Enforcement Deadline",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "High",
+    "description": "Mandatory enforcement for all domestic and foreign bank branches in Kuwait to eliminate flat internal network structures and deploy Zero Trust Architecture (ZTA) across all payment processing zones.",
+    "gracePeriodSummary": "Phase 2 zero-trust deployment deadline December 31, 2026.",
+    "penaltiesSummary": "Administrative penalties under Law No. 32 of 1968 and direct supervisory intervention.",
+    "milestones": [
+      {
+        "label": "CBK Zero Trust Directive Issued",
+        "date": "2025-01-01",
+        "completed": true
+      },
+      {
+        "label": "Core Banking Micro-Segmentation Validated",
+        "date": "2026-06-30",
+        "completed": true
+      },
+      {
+        "label": "Full Zero Trust Architecture Audit",
+        "date": "2026-12-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Deploy identity-aware proxy and continuous authentication on all internal services",
+      "Enforce granular micro-segmentation between user workstations and SWIFT/RTGS core",
+      "Eliminate static credentials; mandate automated secrets rotation with 24-hour expiry"
+    ],
+    "officialReference": "CBK Circular on Cyber Resilience and Modern Architecture Principles",
+    "officialUrl": "https://www.cbk.gov.kw/"
+  },
+  {
+    "id": "evt-turkiye-cbdfo-big-audit",
+    "regulationId": "tr-ddo-bigr",
+    "regulationCode": "CBDFO BIG Guide v2",
+    "title": "Information and Communication Security Guide (BIG): Mandatory External Compliance Audit",
+    "authority": "Digital Transformation Office of the Presidency of Türkiye (CBDFO)",
+    "authorityShort": "CBDFO",
+    "countryId": "turkiye",
+    "countryName": "Türkiye",
+    "countryFlag": "🇹🇷",
+    "macroRegion": "Middle East",
+    "category": "tech_cyber",
+    "categoryLabel": "Cybersecurity & Critical Infrastructure",
+    "targetSectors": [
+      "Government",
+      "Telco",
+      "Banking",
+      "Utilities",
+      "Critical Infrastructure",
+      "Healthcare"
+    ],
+    "startDate": "2026-01-01",
+    "deadlineDate": "2026-12-31",
+    "eventType": "Compliance Audit Window",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Critical",
+    "description": "Public institutions and critical infrastructure operators in Türkiye must submit certified compliance audit reports from accredited independent auditing firms to the CBDFO portal.",
+    "gracePeriodSummary": "Annual audit submission cycle due December 31, 2026.",
+    "penaltiesSummary": "Administrative sanctions, public non-compliance disclosure, and presidential inspection referrals.",
+    "milestones": [
+      {
+        "label": "CBDFO Audit Framework 2026 Released",
+        "date": "2026-01-01",
+        "completed": true
+      },
+      {
+        "label": "Independent Auditor Contract Execution",
+        "date": "2026-05-30",
+        "completed": true
+      },
+      {
+        "label": "Audit Dossier Submission to Presidency",
+        "date": "2026-12-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Validate asset inventory classification according to BIG risk level guidelines",
+      "Verify 100% domestic data hosting compliance for critical public communications",
+      "Submit independent auditor attestation signed by certified lead cybersecurity auditor"
+    ],
+    "officialReference": "Presidential Circular 2019/12 and CBDFO BIG Audit Guide",
+    "officialUrl": "https://www.cbddo.gov.tr/"
+  },
+  {
+    "id": "evt-uae-cbuae-open-finance-enforcement",
+    "regulationId": "uae-cbuae-open-fin",
+    "regulationCode": "CBUAE Open Finance",
+    "title": "CBUAE Open Finance Regulatory Framework: Mandatory Commercial Bank API Go-Live",
+    "authority": "Central Bank of the UAE (CBUAE)",
+    "authorityShort": "CBUAE",
+    "countryId": "uae",
+    "countryName": "United Arab Emirates",
+    "countryFlag": "🇦🇪",
+    "macroRegion": "Middle East",
+    "category": "tech_fintech_payments",
+    "categoryLabel": "FinTech, Payments & Crypto-Assets",
+    "targetSectors": [
+      "Banking",
+      "Fintech",
+      "Payments",
+      "Insurance"
+    ],
+    "startDate": "2024-08-25",
+    "transitionStartDate": "2025-06-01",
+    "deadlineDate": "2027-01-01",
+    "eventType": "Enforcement Deadline",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Critical",
+    "description": "Mandatory go-live for all licensed commercial banks in the UAE to provide open API connectivity for account information services (AISP) and payment initiation services (PISP) to authorized FinTech entities.",
+    "gracePeriodSummary": "Final transition phase concluding January 1, 2027.",
+    "penaltiesSummary": "Fines up to AED 10,000,000 under Decretal Federal Law No. 14 of 2018 and operational restrictions.",
+    "milestones": [
+      {
+        "label": "Public Consultation Closed",
+        "date": "2024-08-25",
+        "completed": true
+      },
+      {
+        "label": "Technical Specifications & Sandbox Testing",
+        "date": "2025-06-01",
+        "completed": true
+      },
+      {
+        "label": "Production API Endpoints Mandatory Active",
+        "date": "2027-01-01",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Expose standardized REST APIs conforming to CBUAE Open Finance Technical Standard",
+      "Enforce FAPI 2.0 security profile with mutual TLS and hardware security module tokens",
+      "Provide granular revocable customer consent dashboard in digital banking channels"
+    ],
+    "officialReference": "CBUAE Circular No. 38/2024 on Open Finance Architecture",
+    "officialUrl": "https://www.centralbank.ae/en/regulations-and-standards/"
+  },
+  {
+    "id": "evt-israel-amendment-13-enforcement",
+    "regulationId": "il-ppa-5777",
+    "regulationCode": "Israel PPL Amendment 13",
+    "title": "Israel Privacy Protection Law (Amendment 13): Major Enforcement & DPO Mandate Enacted",
+    "authority": "Privacy Protection Authority (PPA)",
+    "authorityShort": "PPA",
+    "countryId": "israel",
+    "countryName": "Israel",
+    "countryFlag": "🇮🇱",
+    "macroRegion": "Middle East",
+    "category": "tech_data_privacy",
+    "categoryLabel": "Data Privacy & Cross-Border Governance",
+    "targetSectors": [
+      "Banking",
+      "Healthcare",
+      "Telco",
+      "Retail & E-Commerce",
+      "Cloud & Hyperscalers"
+    ],
+    "startDate": "2024-08-08",
+    "transitionStartDate": "2025-01-01",
+    "deadlineDate": "2027-01-01",
+    "eventType": "Statutory Enactment",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Critical",
+    "description": "Enactment of landmark Amendment 13 granting PPA unprecedented administrative fine powers (up to millions of NIS), slashing database registration burdens while mandating Data Protection Officers for major data processors.",
+    "gracePeriodSummary": "Statutory preparation window expires January 1, 2027.",
+    "penaltiesSummary": "Direct administrative fines of up to NIS 3.2 million per infraction without requiring criminal court indictment.",
+    "milestones": [
+      {
+        "label": "Knesset Passes Amendment 13 into Law",
+        "date": "2024-08-08",
+        "completed": true
+      },
+      {
+        "label": "PPA Implementation Guidelines Published",
+        "date": "2025-03-01",
+        "completed": true
+      },
+      {
+        "label": "Statutory Enforcement Effective Date",
+        "date": "2027-01-01",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Appoint independent statutory Data Protection Officer (DPO) reporting to Board",
+      "Transition from database registration model to comprehensive internal accountability records",
+      "Conduct privacy impact assessments for all systematic profiling technologies",
+      "Update user consent notices to satisfy enhanced transparency obligations"
+    ],
+    "officialReference": "Privacy Protection Law (Amendment No. 13), 5784-2024",
+    "officialUrl": "https://www.gov.il/en/departments/the_privacy_protection_authority"
+  },
+  {
+    "id": "evt-egypt-151-dpa-licensing-deadline",
+    "regulationId": "eg-law-151",
+    "regulationCode": "Egypt Law 151/2020",
+    "title": "Egypt Data Protection Law (Law 151/2020): DPA Licensing & Direct Marketing Compliance Window",
+    "authority": "Personal Data Protection Center (PDPC)",
+    "authorityShort": "PDPC",
+    "countryId": "egypt",
+    "countryName": "Egypt",
+    "countryFlag": "🇪🇬",
+    "macroRegion": "North Africa, The Sahel, & Horn of Africa",
+    "category": "tech_data_privacy",
+    "categoryLabel": "Data Privacy & Cross-Border Governance",
+    "targetSectors": [
+      "Banking",
+      "Telco",
+      "Retail & E-Commerce",
+      "Digital Tech Startups",
+      "Healthcare"
+    ],
+    "startDate": "2020-07-13",
+    "transitionStartDate": "2025-01-15",
+    "deadlineDate": "2027-01-15",
+    "eventType": "Grace Period Expiry",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "High",
+    "description": "Final deadline for corporate entities in Egypt to obtain statutory data controller and processor licenses from the Personal Data Protection Center and register all electronic direct marketing activities.",
+    "gracePeriodSummary": "24-month executive regulation grace period closes January 15, 2027.",
+    "penaltiesSummary": "Imprisonment terms of up to two years and fines up to EGP 5,000,000 under Articles 35-43.",
+    "milestones": [
+      {
+        "label": "Law 151/2020 Promulgated",
+        "date": "2020-07-13",
+        "completed": true
+      },
+      {
+        "label": "Executive Regulations Issued by Prime Minister",
+        "date": "2025-01-15",
+        "completed": true
+      },
+      {
+        "label": "Final Licensing Application Deadline",
+        "date": "2027-01-15",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Submit formal license application to PDPC for commercial data processing",
+      "Obtain special permit for international data transfer outside Egypt",
+      "Appoint Egyptian-resident Data Protection Officer registered with PDPC",
+      "Implement strict opt-in verification mechanisms for electronic direct marketing"
+    ],
+    "officialReference": "Official Gazette Law No. 151 of 2020 & Prime Ministerial Decree",
+    "officialUrl": "https://tra.gov.eg/en/"
+  },
+  {
+    "id": "evt-kuwait-citra-tier4-cloud",
+    "regulationId": "kuwait-citra-cloud",
+    "regulationCode": "CITRA Cloud v2.0",
+    "title": "CITRA Cloud Framework: Mandatory Tier-IV In-Country Hosting for Sovereign Data",
+    "authority": "Communication and Information Technology Regulatory Authority (CITRA)",
+    "authorityShort": "CITRA",
+    "countryId": "kuwait",
+    "countryName": "Kuwait",
+    "countryFlag": "🇰🇼",
+    "macroRegion": "Middle East",
+    "category": "tech_cloud",
+    "categoryLabel": "Cloud & Hyperscalers",
+    "targetSectors": [
+      "Government",
+      "Cloud & Hyperscalers",
+      "Telco",
+      "Banking",
+      "Oil & Gas"
+    ],
+    "startDate": "2025-02-15",
+    "deadlineDate": "2027-02-15",
+    "eventType": "Enforcement Deadline",
+    "status": "Long-Term Horizon (2027+)",
+    "urgency": "High",
+    "description": "Hyperscale cloud providers operating government or critical enterprise workloads in Kuwait must operate active-active data center availability zones certified to Tier-IV uptime resilience within national borders.",
+    "gracePeriodSummary": "24-month infrastructure construction window expires February 15, 2027.",
+    "penaltiesSummary": "Prohibition from participating in public procurement and government cloud contracts.",
+    "milestones": [
+      {
+        "label": "CITRA Cloud Framework Revision 2.0",
+        "date": "2025-02-15",
+        "completed": true
+      },
+      {
+        "label": "Data Classification Audit Submissions",
+        "date": "2026-02-15",
+        "completed": true
+      },
+      {
+        "label": "Tier-IV Certified In-Country Facility Operational",
+        "date": "2027-02-15",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Attain Uptime Institute Tier-IV certification on domestic Kuwait data center",
+      "Demonstrate sovereign data encryption with customer-held keys (BYOK) inaccessible to cloud provider",
+      "Provide zero-data-loss synchronous replication across Kuwait availability zones"
+    ],
+    "officialReference": "CITRA Resolution No. 112/2025 on Cloud Service Provider Licensing",
+    "officialUrl": "https://www.citra.gov.kw/"
+  },
+  {
+    "id": "evt-uae-ai-autonomous-systems-code",
+    "regulationId": "uae-ai-nat-strat",
+    "regulationCode": "UAE AI Ethics Code",
+    "title": "UAE Code of Practice for High-Risk Autonomous Systems & Robotics Conformity Certification",
+    "authority": "Artificial Intelligence, Digital Economy and Remote Work Applications Office",
+    "authorityShort": "UAE AI Office",
+    "countryId": "uae",
+    "countryName": "United Arab Emirates",
+    "countryFlag": "🇦🇪",
+    "macroRegion": "Middle East",
+    "category": "tech_ai",
+    "categoryLabel": "Artificial Intelligence & Autonomous Systems",
+    "targetSectors": [
+      "Automotive",
+      "Healthcare",
+      "Manufacturing",
+      "Space & Aerospace",
+      "Digital Tech Startups"
+    ],
+    "startDate": "2025-08-01",
+    "deadlineDate": "2027-02-28",
+    "eventType": "Enforcement Deadline",
+    "status": "Long-Term Horizon (2027+)",
+    "urgency": "Medium",
+    "description": "Autonomous drones, self-driving transit vehicles, and medical diagnosis AI algorithms must obtain mandatory conformity certification from authorized national testing laboratories before commercial deployment.",
+    "gracePeriodSummary": "Preparation window concluding February 28, 2027.",
+    "penaltiesSummary": "Immediate commercial ban on device sales and operational impoundment.",
+    "milestones": [
+      {
+        "label": "Autonomous Systems Code of Practice Published",
+        "date": "2025-08-01",
+        "completed": true
+      },
+      {
+        "label": "Accreditation of Testing Labs",
+        "date": "2026-04-01",
+        "completed": true
+      },
+      {
+        "label": "Mandatory Conformity Certification Effective",
+        "date": "2027-02-28",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Submit comprehensive safety case documentation and failure mode effects analysis (FMEA)",
+      "Undergo physical track and simulation stress-testing in UAE climate conditions",
+      "Implement tamper-proof flight/driving event data recorder (black box) with cryptographic signing"
+    ],
+    "officialReference": "UAE National AI Strategy 2031 Regulatory Directives",
+    "officialUrl": "https://ai.gov.ae/"
+  },
+  {
+    "id": "evt-qatar-qcb-cloud-migration-deadline",
+    "regulationId": "qatar-qcb-cyber",
+    "regulationCode": "QCB FinTech Cloud Circular",
+    "title": "Qatar Central Bank: Final Migration Deadline for In-Country Cloud Workload Certification",
+    "authority": "Qatar Central Bank (QCB)",
+    "authorityShort": "QCB",
+    "countryId": "qatar",
+    "countryName": "Qatar",
+    "countryFlag": "🇶🇦",
+    "macroRegion": "Middle East",
+    "category": "tech_cloud",
+    "categoryLabel": "Cloud & Hyperscalers",
+    "targetSectors": [
+      "Banking",
+      "Fintech",
+      "Payments",
+      "Insurance"
+    ],
+    "startDate": "2024-09-01",
+    "deadlineDate": "2027-03-31",
+    "eventType": "Enforcement Deadline",
+    "status": "Long-Term Horizon (2027+)",
+    "urgency": "High",
+    "description": "QCB regulated institutions must migrate all sensitive payment processing and customer account databases from overseas cloud regions into certified in-country Qatar cloud zones.",
+    "gracePeriodSummary": "30-month strategic migration program finishes March 31, 2027.",
+    "penaltiesSummary": "Forced disconnection from Qatar Central Bank National Payment Systems and financial fines.",
+    "milestones": [
+      {
+        "label": "QCB Cloud Circular Issued",
+        "date": "2024-09-01",
+        "completed": true
+      },
+      {
+        "label": "Workload Classification & Approval by QCB",
+        "date": "2025-12-31",
+        "completed": true
+      },
+      {
+        "label": "Final Workload Cutover & Decommissioning of Remote Sites",
+        "date": "2027-03-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Certify that cloud provider holds valid QCB and NCSA Level 3 certifications",
+      "Confirm physical location of primary and DR storage nodes strictly inside Qatar",
+      "Submit third-party penetration test of software-defined network boundary"
+    ],
+    "officialReference": "QCB Banking Circular on Cloud Computing Guidelines",
+    "officialUrl": "https://www.qcb.gov.qa/"
+  },
+  {
+    "id": "evt-ksa-nca-otcc-phase2",
+    "regulationId": "ksa-otcc-1",
+    "regulationCode": "NCA OTCC-1:2022 Phase 2",
+    "title": "NCA Operational Technology Controls (OTCC): Phase 2 Hardware Root of Trust for Smart Grid",
+    "authority": "National Cybersecurity Authority (NCA)",
+    "authorityShort": "NCA",
+    "countryId": "ksa",
+    "countryName": "Saudi Arabia",
+    "countryFlag": "🇸🇦",
+    "macroRegion": "Middle East",
+    "category": "tech_ot_ics",
+    "categoryLabel": "Operational Technology & ICS/SCADA",
+    "targetSectors": [
+      "Utilities",
+      "Power & Energy",
+      "Oil & Gas",
+      "Manufacturing",
+      "Critical Infrastructure"
+    ],
+    "startDate": "2024-07-15",
+    "transitionStartDate": "2025-06-01",
+    "deadlineDate": "2027-03-31",
+    "eventType": "Enforcement Deadline",
+    "status": "Long-Term Horizon (2027+)",
+    "urgency": "High",
+    "description": "All electricity, water, and gas utility providers must deploy hardware security modules (eSE/TPM) and cryptographically signed over-the-air firmware update mechanisms on smart meters and remote telemetry units.",
+    "gracePeriodSummary": "Phase 2 OT compliance roadmap ends March 31, 2027.",
+    "penaltiesSummary": "Regulatory sanctions under the Electricity and Water Regulatory Authority frameworks and NCA audits.",
+    "milestones": [
+      {
+        "label": "OTCC Smart Grid Supplement Consultation",
+        "date": "2024-07-15",
+        "completed": true
+      },
+      {
+        "label": "Hardware Vendor Security Requirements Finalized",
+        "date": "2025-06-01",
+        "completed": true
+      },
+      {
+        "label": "Mandatory Device Authentication Mandate Enacted",
+        "date": "2027-03-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Verify TPM 2.0 or secure element embedded in all deployed smart telemetry endpoints",
+      "Validate cryptographic code signing for all firmware revisions with offline CA root",
+      "Ensure complete physical and logical isolation from public telecommunications routing"
+    ],
+    "officialReference": "NCA OTCC-1:2022 Technical Annex on Distributed Energy Resources",
+    "officialUrl": "https://www.nca.gov.sa/regulations-and-standards/otcc/"
+  },
+  {
+    "id": "evt-hist-ksa-pdpl-full-enforce",
+    "regulationId": "ksa-pdpl",
+    "regulationCode": "KSA PDPL M/148",
+    "title": "Saudi Arabia PDPL: Conclusion of 1-Year Grace Period & Full Statutory Enforcement",
+    "authority": "Saudi Data & AI Authority (SDAIA)",
+    "authorityShort": "SDAIA",
+    "countryId": "ksa",
+    "countryName": "Saudi Arabia",
+    "countryFlag": "🇸🇦",
+    "macroRegion": "Middle East",
+    "category": "tech_data_privacy",
+    "categoryLabel": "Data Privacy & Cross-Border Governance",
+    "targetSectors": [
+      "Banking",
+      "Cloud & Hyperscalers",
+      "Retail & E-Commerce",
+      "Telco",
+      "Healthcare",
+      "Digital Tech Startups"
+    ],
+    "startDate": "2023-03-27",
+    "transitionStartDate": "2023-09-14",
+    "deadlineDate": "2024-09-14",
+    "eventType": "Major Overhaul",
+    "status": "Completed / Active",
+    "urgency": "Critical",
+    "description": "Historical milestone: The one-year grace period for the amended Personal Data Protection Law (Royal Decree M/148) concluded, making cross-border data transfer compliance and DPO appointments legally mandatory across Saudi Arabia.",
+    "gracePeriodSummary": "Grace period completed September 14, 2024.",
+    "penaltiesSummary": "Fines up to SAR 5,000,000 and criminal penalties for unlawful intentional disclosure of sensitive records.",
+    "milestones": [
+      {
+        "label": "Royal Decree M/148 Amendments Promulgated",
+        "date": "2023-03-27",
+        "completed": true
+      },
+      {
+        "label": "Executive Regulations Published",
+        "date": "2023-09-07",
+        "completed": true
+      },
+      {
+        "label": "Statutory Grace Period Commenced",
+        "date": "2023-09-14",
+        "completed": true
+      },
+      {
+        "label": "Full Enforcement & Audits Active",
+        "date": "2024-09-14",
+        "completed": true
+      }
+    ],
+    "complianceChecklist": [
+      "Executed SDAIA-compliant Standard Contractual Clauses (SCCs) for cross-border data flows",
+      "Appointed designated Data Protection Officer (DPO) registered on National Data Governance Platform",
+      "Configured 72-hour automated data breach notification playbook to SDAIA",
+      "Updated Record of Processing Activities (RoPA) reflecting legitimate interests"
+    ],
+    "officialReference": "Royal Decree M/148 & SDAIA Executive Regulations",
+    "officialUrl": "https://sdaia.gov.sa/en/SDAIA/about/Documents/Personal%20Data%20English%20V2-23April2023-%20Reviewed-.pdf",
+    "versionDiffId": "diff-ksa-pdpl"
+  },
+  {
+    "id": "evt-hist-tr-law7518-crypto",
+    "regulationId": "tr-spk-crypto-7518",
+    "regulationCode": "Türkiye Law No. 7518",
+    "title": "Türkiye Landmark Crypto Asset Law (Law No. 7518) Enacted into National Law",
+    "authority": "Capital Markets Board (SPK) & Turkish Grand National Assembly",
+    "authorityShort": "SPK",
+    "countryId": "turkiye",
+    "countryName": "Türkiye",
+    "countryFlag": "🇹🇷",
+    "macroRegion": "Middle East",
+    "category": "tech_fintech_payments",
+    "categoryLabel": "FinTech, Payments & Crypto-Assets",
+    "targetSectors": [
+      "Fintech",
+      "Financial Services",
+      "Banking"
+    ],
+    "startDate": "2024-05-15",
+    "transitionStartDate": "2024-07-02",
+    "deadlineDate": "2024-07-28",
+    "eventType": "Statutory Enactment",
+    "status": "Completed / Active",
+    "urgency": "Critical",
+    "description": "Enactment of historic Law No. 7518 amending Capital Markets Law No. 6362, bringing all Turkish crypto asset trading platforms under statutory SPK licensing and TÜBİTAK technical surveillance.",
+    "gracePeriodSummary": "Initial transition filings completed October 2024.",
+    "penaltiesSummary": "3 to 5 years imprisonment for unauthorized crypto asset activities under Article 99/A.",
+    "milestones": [
+      {
+        "label": "Parliamentary Committee Approval",
+        "date": "2024-05-15",
+        "completed": true
+      },
+      {
+        "label": "Published in Official Gazette No. 32590",
+        "date": "2024-07-02",
+        "completed": true
+      },
+      {
+        "label": "Law Enters into Force",
+        "date": "2024-07-28",
+        "completed": true
+      }
+    ],
+    "complianceChecklist": [
+      "Filed declaration of intent to continue operations with SPK",
+      "Segregated customer cash balances in Turkish commercial banks",
+      "Commenced technical validation with TÜBİTAK cryptography teams"
+    ],
+    "officialReference": "Official Gazette No. 32590, Law No. 7518",
+    "officialUrl": "https://spk.gov.tr/",
+    "versionDiffId": "diff-tr-kvkk"
+  },
+  {
+    "id": "evt-hist-uae-pdpl-decree45",
+    "regulationId": "uae-fed-pdpl",
+    "regulationCode": "UAE Federal Decree-Law 45/2021",
+    "title": "UAE Federal Personal Data Protection Law (PDPL) Implementation Roadmap Enacted",
+    "authority": "UAE Data Office",
+    "authorityShort": "UAE Data Office",
+    "countryId": "uae",
+    "countryName": "United Arab Emirates",
+    "countryFlag": "🇦🇪",
+    "macroRegion": "Middle East",
+    "category": "tech_data_privacy",
+    "categoryLabel": "Data Privacy & Cross-Border Governance",
+    "targetSectors": [
+      "Banking",
+      "Telco",
+      "Retail & E-Commerce",
+      "Cloud & Hyperscalers",
+      "Healthcare"
+    ],
+    "startDate": "2021-09-20",
+    "transitionStartDate": "2022-01-02",
+    "deadlineDate": "2024-03-31",
+    "eventType": "Statutory Enactment",
+    "status": "Completed / Active",
+    "urgency": "Critical",
+    "description": "Establishment of the UAE-wide omnibus personal data protection regime, creating standardized rules for consent, subject rights, and cross-border adequacy whitelist criteria.",
+    "gracePeriodSummary": "Executive transition phases completed across onshore UAE entities.",
+    "penaltiesSummary": "Administrative fines up to AED 10,000,000 and corporate trade license suspension.",
+    "milestones": [
+      {
+        "label": "Federal Decree-Law No. 45 Promulgated",
+        "date": "2021-09-20",
+        "completed": true
+      },
+      {
+        "label": "Enacted into Federal Law",
+        "date": "2022-01-02",
+        "completed": true
+      },
+      {
+        "label": "Cross-Border Adequacy Whitelist Published",
+        "date": "2024-03-31",
+        "completed": true
+      }
+    ],
+    "complianceChecklist": [
+      "Established lawful basis for processing personal data across all UAE business units",
+      "Implemented automated subject consent revocation portal in digital customer apps",
+      "Configured data localization controls for sensitive government contractor datasets"
+    ],
+    "officialReference": "Federal Decree-Law No. 45 of 2021 on Personal Data Protection",
+    "officialUrl": "https://u.ae/en/about-the-uae/digital-uae/data/data-protection-laws",
+    "versionDiffId": "diff-uae-nesa"
+  },
+  {
+    "id": "evt-hist-tr-kvkk-transfer-reform",
+    "regulationId": "tr-kvkk-6698",
+    "regulationCode": "KVKK Law 6698 Reform",
+    "title": "Türkiye KVKK: Cross-Border Data Transfer Mechanism Modernization (Standard Contracts)",
+    "authority": "Personal Data Protection Authority (KVKK)",
+    "authorityShort": "KVKK",
+    "countryId": "turkiye",
+    "countryName": "Türkiye",
+    "countryFlag": "🇹🇷",
+    "macroRegion": "Middle East",
+    "category": "tech_data_privacy",
+    "categoryLabel": "Data Privacy & Cross-Border Governance",
+    "targetSectors": [
+      "Cloud & Hyperscalers",
+      "Banking",
+      "Telco",
+      "Retail & E-Commerce",
+      "Manufacturing"
+    ],
+    "startDate": "2024-03-12",
+    "transitionStartDate": "2024-06-01",
+    "deadlineDate": "2024-09-01",
+    "eventType": "Major Overhaul",
+    "status": "Completed / Active",
+    "urgency": "Critical",
+    "description": "KVKK introduced modern Standard Contractual Clauses (Standard Contracts) and Binding Corporate Rules (BCRs) for international data transfers, replacing the unworkable individual Board approval requirement.",
+    "gracePeriodSummary": "Transition window for explicit consent transfers concluded September 1, 2024.",
+    "penaltiesSummary": "Administrative fines up to TRY 1,000,000 for failure to notify standard contracts within 5 business days.",
+    "milestones": [
+      {
+        "label": "Law No. 7499 Amendments to KVKK Enacted",
+        "date": "2024-03-12",
+        "completed": true
+      },
+      {
+        "label": "KVKK Standard Contract Templates Issued",
+        "date": "2024-07-10",
+        "completed": true
+      },
+      {
+        "label": "Full Enforcement of 5-Day Filing Rule",
+        "date": "2024-09-01",
+        "completed": true
+      }
+    ],
+    "complianceChecklist": [
+      "Executed KVKK-approved Standard Contract templates with foreign cloud vendors",
+      "Notified KVKK of executed Standard Contracts within mandatory 5-business-day window",
+      "Updated VERBİS data registry to reflect revised legal transfer grounds"
+    ],
+    "officialReference": "Official Gazette No. 32487, Law No. 7499",
+    "officialUrl": "https://kvkk.gov.tr/",
+    "versionDiffId": "diff-tr-kvkk"
+  },
+  {
+    "id": "evt-hist-ksa-nca-otcc-enacted",
+    "regulationId": "ksa-otcc-1",
+    "regulationCode": "NCA OTCC-1:2022",
+    "title": "NCA Operational Technology Cybersecurity Controls (OTCC-1:2022) Mandated for Energy & Oil",
+    "authority": "National Cybersecurity Authority (NCA)",
+    "authorityShort": "NCA",
+    "countryId": "ksa",
+    "countryName": "Saudi Arabia",
+    "countryFlag": "🇸🇦",
+    "macroRegion": "Middle East",
+    "category": "tech_ot_ics",
+    "categoryLabel": "Operational Technology & ICS/SCADA",
+    "targetSectors": [
+      "Oil & Gas",
+      "Power & Energy",
+      "Utilities",
+      "Manufacturing",
+      "Critical Infrastructure"
+    ],
+    "startDate": "2022-09-01",
+    "transitionStartDate": "2023-01-01",
+    "deadlineDate": "2023-12-31",
+    "eventType": "Statutory Enactment",
+    "status": "Completed / Active",
+    "urgency": "Critical",
+    "description": "Enacted mandatory baseline controls across 4 domains specifically designed to safeguard SCADA, DCS, and Industrial Automation and Control Systems (IACS) across Saudi Aramco, SEC, and Marafiq.",
+    "gracePeriodSummary": "Initial 12-month compliance runway concluded December 31, 2023.",
+    "penaltiesSummary": "Severe operational audit findings, regulatory shutdowns, and executive accountability.",
+    "milestones": [
+      {
+        "label": "OTCC-1:2022 Standard Released",
+        "date": "2022-09-01",
+        "completed": true
+      },
+      {
+        "label": "IACS Network Air-Gap Verification",
+        "date": "2023-06-30",
+        "completed": true
+      },
+      {
+        "label": "Full OTCC Compliance Mandate",
+        "date": "2023-12-31",
+        "completed": true
+      }
+    ],
+    "complianceChecklist": [
+      "Physically air-gap or firewall Purdue Model Level 2/3 industrial networks from IT domain",
+      "Ban unvetted removable USB media in plant control rooms",
+      "Implement unidirectional security gateways (data diodes) for plant historian replication"
+    ],
+    "officialReference": "NCA OTCC-1:2022 Controls Baseline",
+    "officialUrl": "https://www.nca.gov.sa/regulations-and-standards/otcc/"
+  },
+  {
+    "id": "evt-algeria-anssi-cii",
+    "regulationId": "algeria-anssi-decree",
+    "regulationCode": "Algeria Decree 20-05",
+    "title": "ANSSI Critical Infrastructure Security Registration & Baseline Attestation",
+    "authority": "Agence Nationale de la Sécurité des Systèmes d’Information (ANSSI Algeria)",
+    "authorityShort": "ANSSI Algeria",
+    "countryId": "algeria",
+    "countryName": "Algeria",
+    "countryFlag": "🇩🇿",
+    "macroRegion": "North Africa, The Sahel, & Horn of Africa",
+    "category": "tech_cyber",
+    "categoryLabel": "Cybersecurity & Critical Infrastructure",
+    "targetSectors": [
+      "Oil & Gas",
+      "Power & Energy",
+      "Utilities",
+      "Critical Infrastructure"
+    ],
+    "startDate": "2026-01-15",
+    "transitionStartDate": "2026-06-01",
+    "deadlineDate": "2027-01-31",
+    "eventType": "Compliance Audit Window",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "High",
+    "description": "Projected milestone: designated operators of national critical information systems register their security baseline and submit an attestation under Presidential Decree 20-05. Date is a modelled compliance checkpoint, not a gazetted legal deadline.",
+    "gracePeriodSummary": "Phased registration window through Q1 2027.",
+    "penaltiesSummary": "Administrative sanctions and possible suspension of operating authorisation for unregistered critical operators.",
+    "milestones": [
+      {
+        "label": "Decree 20-05 implementation notice",
+        "date": "2026-01-15",
+        "completed": true
+      },
+      {
+        "label": "Critical operator self-registration opens",
+        "date": "2026-06-01",
+        "completed": false
+      },
+      {
+        "label": "Baseline attestation submission",
+        "date": "2027-01-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Inventory national critical information systems and dependencies",
+      "Document security baseline against ANSSI controls",
+      "Nominate an accountable security officer for regulator liaison"
+    ],
+    "officialReference": "Presidential Decree No. 20-05 on Information Systems Security",
+    "officialUrl": "https://www.joradp.dz/"
+  },
+  {
+    "id": "evt-djibouti-cnil-dpa",
+    "regulationId": "dj-law-177-data-protection",
+    "regulationCode": "DJ-Law-177-2017",
+    "title": "CNIL Djibouti Data Controller Registration & Processing Declaration",
+    "authority": "Commission Nationale de l’Informatique et des Libertés",
+    "authorityShort": "CNIL Djibouti",
+    "countryId": "djibouti",
+    "countryName": "Djibouti",
+    "countryFlag": "🇩🇯",
+    "macroRegion": "North Africa, The Sahel, & Horn of Africa",
+    "category": "tech_data_privacy",
+    "categoryLabel": "Data Protection & Privacy",
+    "targetSectors": [
+      "Banking",
+      "Telco",
+      "Government",
+      "Healthcare"
+    ],
+    "startDate": "2026-02-01",
+    "transitionStartDate": "2026-07-01",
+    "deadlineDate": "2027-02-28",
+    "eventType": "Enforcement Deadline",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Medium",
+    "description": "Projected milestone: controllers processing personal data register with the CNIL and file processing declarations under Law 177/AN/17. Date is a modelled compliance checkpoint, not a gazetted legal deadline.",
+    "gracePeriodSummary": "Declaration window opening H2 2026.",
+    "penaltiesSummary": "Fines and processing suspension for undeclared large-scale personal data processing.",
+    "milestones": [
+      {
+        "label": "Registry portal guidance published",
+        "date": "2026-02-01",
+        "completed": true
+      },
+      {
+        "label": "Controller declaration window opens",
+        "date": "2026-07-01",
+        "completed": false
+      },
+      {
+        "label": "Declaration submission deadline",
+        "date": "2027-02-28",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Map personal data processing activities (RoPA)",
+      "File processing declarations with CNIL Djibouti",
+      "Establish data subject rights request handling"
+    ],
+    "officialReference": "Law No. 177/AN/17/7th L on the Protection of Personal Data",
+    "officialUrl": "https://presidence.dj/"
+  },
+  {
+    "id": "evt-iran-ccl-data-localization",
+    "regulationId": "ir-computer-crimes-law",
+    "regulationCode": "CCL-2009",
+    "title": "Data Retention & Lawful Access Compliance Review under Computer Crimes Law",
+    "authority": "Supreme Council of Cyberspace / Majlis",
+    "authorityShort": "NCC / Majlis",
+    "countryId": "iran",
+    "countryName": "Iran",
+    "countryFlag": "🇮🇷",
+    "macroRegion": "Middle East",
+    "category": "non_tech_impact",
+    "categoryLabel": "Cybercrime & Lawful Access",
+    "targetSectors": [
+      "Government",
+      "Telco",
+      "Banking",
+      "Cloud & Hyperscalers"
+    ],
+    "startDate": "2026-03-01",
+    "transitionStartDate": "2026-08-01",
+    "deadlineDate": "2027-03-31",
+    "eventType": "Compliance Audit Window",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Medium",
+    "description": "Projected milestone: service providers review traffic-data retention and lawful-access obligations under the Computer Crimes Law. Date is a modelled compliance checkpoint, not a gazetted legal deadline.",
+    "penaltiesSummary": "Content and service restrictions; penalties for non-retention of mandated traffic data.",
+    "milestones": [
+      {
+        "label": "Retention obligations circular",
+        "date": "2026-03-01",
+        "completed": true
+      },
+      {
+        "label": "Provider compliance self-review",
+        "date": "2026-08-01",
+        "completed": false
+      },
+      {
+        "label": "Compliance confirmation deadline",
+        "date": "2027-03-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Confirm traffic-data retention configuration and duration",
+      "Document lawful-access request handling procedures",
+      "Review content-filtering and takedown workflows"
+    ],
+    "officialReference": "Computer Crimes Law of the Islamic Republic of Iran (2009)",
+    "officialUrl": "https://cbi.ir/default_en.aspx"
+  },
+  {
+    "id": "evt-iraq-cbi-cyber-attestation",
+    "regulationId": "iraq-cbi-cyber",
+    "regulationCode": "CBI Cyber Regulations 2022",
+    "title": "CBI Information Security & Cyber Defense Annual Attestation for Licensed Banks",
+    "authority": "Central Bank of Iraq (CBI)",
+    "authorityShort": "CBI",
+    "countryId": "iraq",
+    "countryName": "Iraq",
+    "countryFlag": "🇮🇶",
+    "macroRegion": "Middle East",
+    "category": "tech_cyber",
+    "categoryLabel": "Financial Sector Cybersecurity",
+    "targetSectors": [
+      "Banking",
+      "Financial Services",
+      "Payments"
+    ],
+    "startDate": "2026-01-01",
+    "transitionStartDate": "2026-06-30",
+    "deadlineDate": "2026-12-31",
+    "eventType": "Compliance Audit Window",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "High",
+    "description": "Projected milestone: licensed banks submit annual information-security and cyber-defense attestations under CBI Instructions. Date is a modelled compliance checkpoint, not a gazetted legal deadline.",
+    "penaltiesSummary": "Supervisory measures and remediation orders for banks failing the cyber-defense baseline.",
+    "milestones": [
+      {
+        "label": "CBI cyber instructions in force",
+        "date": "2026-01-01",
+        "completed": true
+      },
+      {
+        "label": "Mid-year controls gap assessment",
+        "date": "2026-06-30",
+        "completed": false
+      },
+      {
+        "label": "Annual attestation submission",
+        "date": "2026-12-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Complete controls gap assessment against CBI instructions",
+      "Validate SOC monitoring and incident reporting to CBI",
+      "Submit board-approved cyber-defense attestation"
+    ],
+    "officialReference": "CBI Instructions for Information Security & Cyber Defense (2022)",
+    "officialUrl": "https://cbi.iq/"
+  },
+  {
+    "id": "evt-lebanon-bdl-144-review",
+    "regulationId": "lebanon-bdl-144",
+    "regulationCode": "BDL Basic Circular 144",
+    "title": "BDL Circular 144 Cybersecurity & IT Risk Governance Review",
+    "authority": "Banque du Liban (BDL) / Banking Control Commission of Lebanon",
+    "authorityShort": "BDL",
+    "countryId": "lebanon",
+    "countryName": "Lebanon",
+    "countryFlag": "🇱🇧",
+    "macroRegion": "Middle East",
+    "category": "tech_cyber",
+    "categoryLabel": "Financial Sector Cybersecurity",
+    "targetSectors": [
+      "Banking",
+      "Financial Services",
+      "Payments"
+    ],
+    "startDate": "2026-02-15",
+    "transitionStartDate": "2026-07-15",
+    "deadlineDate": "2027-01-15",
+    "eventType": "Compliance Audit Window",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Medium",
+    "description": "Projected milestone: banks and financial institutions review IT-risk governance and report cybersecurity posture under BDL Basic Circular 144. Date is a modelled compliance checkpoint, not a gazetted legal deadline.",
+    "penaltiesSummary": "Supervisory action by the Banking Control Commission for governance deficiencies.",
+    "milestones": [
+      {
+        "label": "Circular 144 governance guidance",
+        "date": "2026-02-15",
+        "completed": true
+      },
+      {
+        "label": "IT-risk governance self-assessment",
+        "date": "2026-07-15",
+        "completed": false
+      },
+      {
+        "label": "Cybersecurity posture reporting",
+        "date": "2027-01-15",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Establish board-level IT risk governance committee",
+      "Document cybersecurity risk register and treatment plan",
+      "Report posture to BDL / Banking Control Commission"
+    ],
+    "officialReference": "BDL Basic Circular No. 144 on Cybersecurity & IT Risk",
+    "officialUrl": "https://www.bdl.gov.lb/"
+  },
+  {
+    "id": "evt-libya-cybercrime-5-enforce",
+    "regulationId": "ly-cybercrime-law-5",
+    "regulationCode": "LY-Law-5-2022",
+    "title": "Law No. 5 of 2022 Cybercrime Enforcement & Provider Obligations Review",
+    "authority": "General Authority for Communications and Informatics",
+    "authorityShort": "GACI",
+    "countryId": "libya",
+    "countryName": "Libya",
+    "countryFlag": "🇱🇾",
+    "macroRegion": "North Africa, The Sahel, & Horn of Africa",
+    "category": "non_tech_impact",
+    "categoryLabel": "Cybercrime & Lawful Access",
+    "targetSectors": [
+      "Government",
+      "Banking",
+      "Oil & Gas",
+      "Telco"
+    ],
+    "startDate": "2026-04-01",
+    "transitionStartDate": "2026-09-01",
+    "deadlineDate": "2027-04-30",
+    "eventType": "Enforcement Deadline",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Medium",
+    "description": "Projected milestone: communications providers align lawful-access and data-preservation processes to Law No. 5 of 2022. Date is a modelled compliance checkpoint, not a gazetted legal deadline.",
+    "penaltiesSummary": "Criminal and administrative penalties for non-cooperation with lawful-access requests.",
+    "milestones": [
+      {
+        "label": "Enforcement guidance issued",
+        "date": "2026-04-01",
+        "completed": true
+      },
+      {
+        "label": "Provider process alignment",
+        "date": "2026-09-01",
+        "completed": false
+      },
+      {
+        "label": "Compliance confirmation",
+        "date": "2027-04-30",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Define data-preservation and disclosure procedures",
+      "Train staff on lawful-access request handling",
+      "Maintain audit logs of cooperation requests"
+    ],
+    "officialReference": "Law No. 5 of 2022 on Combating Cybercrime",
+    "officialUrl": "https://cbl.gov.ly/en/"
+  },
+  {
+    "id": "evt-mauritania-apdp-registration",
+    "regulationId": "mr-law-2017-020-data-protection",
+    "regulationCode": "MR-Law-2017-020",
+    "title": "APDP Mauritania Personal Data Processing Registration",
+    "authority": "Autorité de Protection des Données Personnelles",
+    "authorityShort": "APDP Mauritania",
+    "countryId": "mauritania",
+    "countryName": "Mauritania",
+    "countryFlag": "🇲🇷",
+    "macroRegion": "North Africa, The Sahel, & Horn of Africa",
+    "category": "tech_data_privacy",
+    "categoryLabel": "Data Protection & Privacy",
+    "targetSectors": [
+      "Banking",
+      "Telco",
+      "Government",
+      "Mining & Extraction"
+    ],
+    "startDate": "2026-03-15",
+    "transitionStartDate": "2026-08-15",
+    "deadlineDate": "2027-03-15",
+    "eventType": "Enforcement Deadline",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Medium",
+    "description": "Projected milestone: data controllers register processing activities with the APDP under Law 2017-020. Date is a modelled compliance checkpoint, not a gazetted legal deadline.",
+    "penaltiesSummary": "Fines and processing restrictions for undeclared processing of personal data.",
+    "milestones": [
+      {
+        "label": "APDP registration guidance",
+        "date": "2026-03-15",
+        "completed": true
+      },
+      {
+        "label": "Controller declaration window",
+        "date": "2026-08-15",
+        "completed": false
+      },
+      {
+        "label": "Registration deadline",
+        "date": "2027-03-15",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Maintain a record of processing activities",
+      "Register processing with APDP Mauritania",
+      "Implement data subject rights procedures"
+    ],
+    "officialReference": "Law No. 2017-020 on the Protection of Personal Data",
+    "officialUrl": "https://www.tic.gov.mr/"
+  },
+  {
+    "id": "evt-palestine-pma-resilience",
+    "regulationId": "ps-pma-cyber-resilience",
+    "regulationCode": "PMA-CRF-2022",
+    "title": "PMA Operational Resilience & Cybersecurity Testing Cycle",
+    "authority": "Palestine Monetary Authority",
+    "authorityShort": "PMA",
+    "countryId": "palestine",
+    "countryName": "Palestine",
+    "countryFlag": "🇵🇸",
+    "macroRegion": "Middle East",
+    "category": "tech_operational_resilience",
+    "categoryLabel": "Operational Resilience",
+    "targetSectors": [
+      "Banking",
+      "Payments",
+      "Financial Services",
+      "Fintech"
+    ],
+    "startDate": "2026-02-01",
+    "transitionStartDate": "2026-07-01",
+    "deadlineDate": "2026-12-31",
+    "eventType": "Compliance Audit Window",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "High",
+    "description": "Projected milestone: supervised institutions complete resilience testing and report to the PMA under the Cybersecurity & Operational Resilience instructions. Date is a modelled compliance checkpoint, not a gazetted legal deadline.",
+    "penaltiesSummary": "Supervisory measures for institutions failing resilience testing thresholds.",
+    "milestones": [
+      {
+        "label": "PMA resilience instructions in force",
+        "date": "2026-02-01",
+        "completed": true
+      },
+      {
+        "label": "Scenario-based resilience testing",
+        "date": "2026-07-01",
+        "completed": false
+      },
+      {
+        "label": "Resilience results reporting",
+        "date": "2026-12-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Define critical operations and impact tolerances",
+      "Run scenario-based disruption testing",
+      "Report resilience findings to PMA"
+    ],
+    "officialReference": "PMA Instructions on Cybersecurity & Operational Resilience",
+    "officialUrl": "https://www.pma.ps/en/"
+  },
+  {
+    "id": "evt-somalia-nca-telecom",
+    "regulationId": "so-nca-telecom-cyber-directive",
+    "regulationCode": "SO-NCA-DIR-2021",
+    "title": "NCA Somalia Telecom & ISP Cybersecurity Baseline Compliance",
+    "authority": "National Communications Authority",
+    "authorityShort": "NCA Somalia",
+    "countryId": "somalia",
+    "countryName": "Somalia",
+    "countryFlag": "🇸🇴",
+    "macroRegion": "North Africa, The Sahel, & Horn of Africa",
+    "category": "tech_cyber",
+    "categoryLabel": "Telecom Cybersecurity",
+    "targetSectors": [
+      "Telco",
+      "Cloud & Hyperscalers",
+      "Government"
+    ],
+    "startDate": "2026-03-01",
+    "transitionStartDate": "2026-09-01",
+    "deadlineDate": "2027-03-31",
+    "eventType": "Compliance Audit Window",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Medium",
+    "description": "Projected milestone: licensed telecom and ISP operators implement the NCA cybersecurity baseline and report compliance. Date is a modelled compliance checkpoint, not a gazetted legal deadline.",
+    "penaltiesSummary": "Licence conditions and enforcement action for operators below the baseline.",
+    "milestones": [
+      {
+        "label": "NCA cybersecurity directives issued",
+        "date": "2026-03-01",
+        "completed": true
+      },
+      {
+        "label": "Operator baseline implementation",
+        "date": "2026-09-01",
+        "completed": false
+      },
+      {
+        "label": "Compliance reporting",
+        "date": "2027-03-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Implement network security baseline controls",
+      "Establish incident notification to NCA",
+      "Maintain subscriber data protection safeguards"
+    ],
+    "officialReference": "NCA Cybersecurity Directives for Telecom & ISP Operators",
+    "officialUrl": "https://nca.gov.so/"
+  },
+  {
+    "id": "evt-sudan-cybercrime-review",
+    "regulationId": "sd-cybercrime-act-2020",
+    "regulationCode": "SD-Cyber-Act-2020",
+    "title": "Cybercrime Act (2020 Amendments) Provider Compliance Review",
+    "authority": "Ministry of Justice & Telecom and Post Regulatory Authority",
+    "authorityShort": "MoJ / TPRA",
+    "countryId": "sudan",
+    "countryName": "Sudan",
+    "countryFlag": "🇸🇩",
+    "macroRegion": "North Africa, The Sahel, & Horn of Africa",
+    "category": "non_tech_impact",
+    "categoryLabel": "Cybercrime & Lawful Access",
+    "targetSectors": [
+      "Government",
+      "Banking",
+      "Telco",
+      "Retail & E-Commerce"
+    ],
+    "startDate": "2026-04-01",
+    "transitionStartDate": "2026-09-01",
+    "deadlineDate": "2027-04-30",
+    "eventType": "Enforcement Deadline",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Low",
+    "description": "Projected milestone: service providers review obligations under the amended Cybercrime Act. Date is a modelled compliance checkpoint, not a gazetted legal deadline.",
+    "penaltiesSummary": "Criminal penalties for offences; provider obligations for evidence preservation.",
+    "milestones": [
+      {
+        "label": "Amended act guidance",
+        "date": "2026-04-01",
+        "completed": true
+      },
+      {
+        "label": "Provider obligations review",
+        "date": "2026-09-01",
+        "completed": false
+      },
+      {
+        "label": "Compliance confirmation",
+        "date": "2027-04-30",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Review evidence-preservation obligations",
+      "Document lawful-access response procedures",
+      "Update acceptable-use and abuse-handling policies"
+    ],
+    "officialReference": "Cybercrime Act of 2007 (as amended 2020)",
+    "officialUrl": "https://tpra.gov.sd/"
+  },
+  {
+    "id": "evt-syria-electronic-crimes",
+    "regulationId": "sy-cybercrime-law-20",
+    "regulationCode": "SY-Law-20-2022",
+    "title": "Law No. 20 of 2022 Electronic Crimes Provider Obligations Review",
+    "authority": "National Agency for Network Services",
+    "authorityShort": "NANS",
+    "countryId": "syria",
+    "countryName": "Syria",
+    "countryFlag": "🇸🇾",
+    "macroRegion": "Middle East",
+    "category": "non_tech_impact",
+    "categoryLabel": "Cybercrime & Lawful Access",
+    "targetSectors": [
+      "Government",
+      "Banking",
+      "Telco",
+      "Utilities"
+    ],
+    "startDate": "2026-05-01",
+    "transitionStartDate": "2026-10-01",
+    "deadlineDate": "2027-05-31",
+    "eventType": "Enforcement Deadline",
+    "status": "Long-Term Horizon (2027+)",
+    "urgency": "Low",
+    "description": "Projected milestone: providers review data-preservation and cooperation obligations under Law No. 20 of 2022. Date is a modelled compliance checkpoint, not a gazetted legal deadline.",
+    "penaltiesSummary": "Criminal penalties for electronic offences and non-cooperation.",
+    "milestones": [
+      {
+        "label": "Law No. 20 guidance",
+        "date": "2026-05-01",
+        "completed": true
+      },
+      {
+        "label": "Provider process alignment",
+        "date": "2026-10-01",
+        "completed": false
+      },
+      {
+        "label": "Compliance confirmation",
+        "date": "2027-05-31",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Define data-preservation procedures",
+      "Document lawful-access cooperation workflow",
+      "Maintain records of requests and responses"
+    ],
+    "officialReference": "Law No. 20 of 2022 on Electronic Crimes",
+    "officialUrl": "https://moct.gov.sy/"
+  },
+  {
+    "id": "evt-yemen-cby-ebanking",
+    "regulationId": "ye-cby-electronic-banking",
+    "regulationCode": "CBY-EBS-2018",
+    "title": "CBY Electronic Banking & Mobile Payment Security Compliance",
+    "authority": "Central Bank of Yemen",
+    "authorityShort": "CBY",
+    "countryId": "yemen",
+    "countryName": "Yemen",
+    "countryFlag": "🇾🇪",
+    "macroRegion": "Middle East",
+    "category": "tech_fintech_payments",
+    "categoryLabel": "FinTech & Payments Security",
+    "targetSectors": [
+      "Banking",
+      "Payments",
+      "Fintech",
+      "Telco"
+    ],
+    "startDate": "2026-03-01",
+    "transitionStartDate": "2026-08-01",
+    "deadlineDate": "2027-02-28",
+    "eventType": "Compliance Audit Window",
+    "status": "Upcoming (2026-2027)",
+    "urgency": "Low",
+    "description": "Projected milestone: payment and mobile-money providers align security controls to CBY electronic-banking directives. Date is a modelled compliance checkpoint, not a gazetted legal deadline.",
+    "penaltiesSummary": "Supervisory measures for providers not meeting payment-security requirements.",
+    "milestones": [
+      {
+        "label": "CBY e-banking directives guidance",
+        "date": "2026-03-01",
+        "completed": true
+      },
+      {
+        "label": "Provider controls implementation",
+        "date": "2026-08-01",
+        "completed": false
+      },
+      {
+        "label": "Security compliance reporting",
+        "date": "2027-02-28",
+        "completed": false
+      }
+    ],
+    "complianceChecklist": [
+      "Implement transaction authentication and monitoring",
+      "Establish customer fraud-handling procedures",
+      "Report payment-security posture to CBY"
+    ],
+    "officialReference": "CBY Electronic Banking & Mobile Payment Directives",
+    "officialUrl": "https://cby-ye.com/"
+  }
+]

@@ -1,0 +1,38 @@
+# Dependencies (reinstalled inside the image)
+node_modules
+
+# Build output (regenerated inside the image)
+dist
+server.js
+server.cjs
+server.mjs
+
+# Version control & CI
+.git
+.github
+.gitignore
+
+# Local env & secrets — NEVER bake into the image
+.env
+.env.*
+
+# Editor / OS cruft
+.DS_Store
+.vscode
+.idea
+.kiro
+
+# Logs & temp
+*.log
+npm-debug.log*
+
+# Local package manager lockfile for bun (project uses npm)
+bun.lock
+
+# Large docs / diagrams not needed at runtime
+*.png
+*.docx
+*.doc
+ComplianceIQ_*.md
+ComplianceIQ_System_Architecture_*.md
+ComplianeIQ-*.png

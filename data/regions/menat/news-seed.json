@@ -1,0 +1,309 @@
+[
+  {
+    "id": "news-ksa-sdaia-ai-gen-2026",
+    "title": "SDAIA Enforces Mandatory Registration and Bias Auditing for Generative AI Models",
+    "summary": "The Saudi Data and Artificial Intelligence Authority (SDAIA) has mandated that all commercial entities deploying generative AI pipelines within the Kingdom must complete model registry filings, certify training data lineage, and undergo independent algorithmic fairness testing before commercial deployment.",
+    "jurisdiction": "Saudi Arabia",
+    "countryCode": "sa",
+    "countryFlag": "🇸🇦",
+    "authority": "SDAIA",
+    "category": "AI Governance",
+    "impactLevel": "High",
+    "sentiment": "Impactful",
+    "sentimentRationale": "Binding enforcement directive with legal compliance penalties and pre-deployment registration filings.",
+    "publishedAt": "2026-03-18T08:30:00Z",
+    "timeAgo": "2 hours ago",
+    "sourceName": "Saudi Press Agency (SPA)",
+    "sourceUrl": "https://sdaia.gov.sa",
+    "searchGroundingQuery": "SDAIA generative AI model registry regulation Saudi Arabia",
+    "tags": [
+      "GenerativeAI",
+      "ModelRegistry",
+      "AlgorithmicAudit",
+      "Vision2030"
+    ],
+    "keyObligations": [
+      "Pre-deployment risk tier filing for foundation models",
+      "Mandatory human-in-the-loop safeguards for judicial, medical, and banking outputs",
+      "Verification of local data sovereignty during fine-tuning cycles"
+    ],
+    "affectedSectors": [
+      "Technology & SaaS",
+      "Banking & FinTech",
+      "Healthcare",
+      "Public Administration"
+    ]
+  },
+  {
+    "id": "news-uae-cbuae-open-finance-2026",
+    "title": "CBUAE Issues Framework for Sovereign API Security and Open Banking Consent",
+    "summary": "The Central Bank of the UAE (CBUAE) finalized its Open Finance regulatory directive, requiring all retail banks and licensed payment facilitators to implement Financial-Grade API (FAPI) security profiles, biometric customer consent lifecycle tracking, and bilateral TLS 1.3 encryption.",
+    "jurisdiction": "United Arab Emirates",
+    "countryCode": "ae",
+    "countryFlag": "🇦🇪",
+    "authority": "CBUAE",
+    "category": "FinTech & Banking",
+    "impactLevel": "High",
+    "sentiment": "Impactful",
+    "sentimentRationale": "Finalized statutory framework setting strict architectural milestones and 15-minute anomaly reporting.",
+    "publishedAt": "2026-03-17T14:15:00Z",
+    "timeAgo": "Yesterday",
+    "sourceName": "Emirates News Agency (WAM)",
+    "sourceUrl": "https://www.centralbank.ae/en/",
+    "searchGroundingQuery": "CBUAE Open Finance regulatory framework API security 2026",
+    "tags": [
+      "OpenBanking",
+      "FAPI",
+      "PaymentServices",
+      "ZeroTrustAPI"
+    ],
+    "keyObligations": [
+      "Transition to standardized FAPI 2.0 security specifications by Q3 2026",
+      "Real-time transaction fraud telemetry reporting within 15 minutes of anomaly detection",
+      "Revocation of third-party aggregator access upon consumer consent withdrawal"
+    ],
+    "affectedSectors": [
+      "Banking & Financial Services",
+      "FinTech & Payments",
+      "E-Commerce"
+    ]
+  },
+  {
+    "id": "news-ksa-nca-ot-cyber-2026",
+    "title": "NCA Issues Critical Operational Technology (OT) Cyber Hardening Directive",
+    "summary": "The National Cybersecurity Authority (NCA) has published an updated OT cybersecurity standard mandating strict hardware air-gapping, industrial control system (ICS) anomaly detection, and continuous firmware supply chain verification across all national energy, desalination, and petrochemical plants.",
+    "jurisdiction": "Saudi Arabia",
+    "countryCode": "sa",
+    "countryFlag": "🇸🇦",
+    "authority": "NCA",
+    "category": "Critical Infrastructure",
+    "impactLevel": "High",
+    "sentiment": "Impactful",
+    "sentimentRationale": "Immediate operational mandate imposing hardware air-gapping and PAM logging across critical industrial facilities.",
+    "publishedAt": "2026-03-16T11:00:00Z",
+    "timeAgo": "2 days ago",
+    "sourceName": "NCA National Cybersecurity Portal",
+    "sourceUrl": "https://www.nca.gov.sa/",
+    "searchGroundingQuery": "NCA OT industrial control systems cybersecurity directive KSA",
+    "tags": [
+      "SCADA",
+      "AirGap",
+      "CriticalInfrastructure",
+      "IndustrialOT"
+    ],
+    "keyObligations": [
+      "Implementation of unidirectional data diodes at Purdue Model Level 3/Level 4 boundary",
+      "Mandatory session recording and privileged access management (PAM) for vendor field maintenance",
+      "Compulsory annual third-party OT resilience stress tests"
+    ],
+    "affectedSectors": [
+      "Oil, Gas & Energy",
+      "Utilities & Water Desalination",
+      "Manufacturing & Chemical"
+    ]
+  },
+  {
+    "id": "news-uae-desc-sovereign-cloud-2026",
+    "title": "Dubai Electronic Security Center (DESC) Mandates Tier-4 In-Country Sovereign Cloud Hosting",
+    "summary": "DESC released binding guidelines requiring all Dubai government entities and critical digital infrastructure providers to transition sensitive citizen records to Tier-4 certified sovereign data centers operating within the UAE jurisdiction, strictly prohibiting offshore telemetry ingestion.",
+    "jurisdiction": "United Arab Emirates",
+    "countryCode": "ae",
+    "countryFlag": "🇦🇪",
+    "authority": "DESC",
+    "category": "Data Privacy & Cloud",
+    "impactLevel": "High",
+    "sentiment": "Impactful",
+    "sentimentRationale": "Strict localization mandate requiring BYOK HSM encryption and prohibiting overseas telemetry egress.",
+    "publishedAt": "2026-03-15T09:45:00Z",
+    "timeAgo": "3 days ago",
+    "sourceName": "Dubai Government Gazette",
+    "sourceUrl": "https://desc.gov.ae",
+    "searchGroundingQuery": "DESC Dubai sovereign cloud data residency standard",
+    "tags": [
+      "CloudSecurity",
+      "DataResidency",
+      "Tier4",
+      "PublicSector"
+    ],
+    "keyObligations": [
+      "Bring-Your-Own-Key (BYOK) hardware security module (HSM) isolation for multi-tenant SaaS",
+      "Formal audit sign-off by accredited DESC security assessor prior to cloud migration",
+      "Zero international egress of personally identifiable metadata without explicit ministerial waiver"
+    ],
+    "affectedSectors": [
+      "Government & Public Sector",
+      "Cloud Providers & SaaS",
+      "Healthcare"
+    ]
+  },
+  {
+    "id": "news-qatar-qcb-crypto-fintech-2026",
+    "title": "Qatar Central Bank Publishes Regulatory Sandbox Criteria for Tokenized Assets",
+    "summary": "Qatar Central Bank (QCB) opened its upgraded fintech sandbox focusing on digital asset tokenization, distributed ledger settlement for cross-border trade, and programmable escrow services, subject to stringent AML/CFT automated screening.",
+    "jurisdiction": "Qatar",
+    "countryCode": "qa",
+    "countryFlag": "🇶🇦",
+    "authority": "QCB",
+    "category": "FinTech & Banking",
+    "impactLevel": "Medium",
+    "sentiment": "Consultation Phase",
+    "sentimentRationale": "Experimental sandbox criteria welcoming industry applications and supervisory pilot testing.",
+    "publishedAt": "2026-03-14T13:20:00Z",
+    "timeAgo": "4 days ago",
+    "sourceName": "The Peninsula Qatar",
+    "sourceUrl": "https://www.qcb.gov.qa/en/Pages/default.aspx",
+    "searchGroundingQuery": "Qatar Central Bank QCB digital assets fintech sandbox guidelines",
+    "tags": [
+      "Sandbox",
+      "Tokenization",
+      "AML",
+      "CrossBorderSettlement"
+    ],
+    "keyObligations": [
+      "Escrow capital collateralization ratio of 100% held in Qatari Riyals",
+      "Real-time automated sanctions screening against UN and national terror financing registries",
+      "Mandatory maximum 6-month testing window before formal licensure review"
+    ],
+    "affectedSectors": [
+      "FinTech & Payments",
+      "Capital Markets & WealthTech",
+      "Banking"
+    ]
+  },
+  {
+    "id": "news-turkey-btk-quantum-encryption-2026",
+    "title": "Turkey BTK Directs Telecom Operators to Prepare Post-Quantum Cryptography Roadmap",
+    "summary": "Turkey’s Information and Communication Technologies Authority (BTK) issued a strategic advisory requiring Tier-1 telecommunications carriers, submarine cable landing stations, and national backbone operators to test and deploy NIST-standardized Post-Quantum Cryptography (PQC) algorithms.",
+    "jurisdiction": "Turkey",
+    "countryCode": "tr",
+    "countryFlag": "🇹🇷",
+    "authority": "BTK",
+    "category": "Cybersecurity",
+    "impactLevel": "Medium",
+    "sentiment": "Consultation Phase",
+    "sentimentRationale": "Strategic consultation and roadmap submission window prior to formal binding statutory codification.",
+    "publishedAt": "2026-03-13T10:15:00Z",
+    "timeAgo": "5 days ago",
+    "sourceName": "Anadolu Agency",
+    "sourceUrl": "https://www.btk.gov.tr/en/",
+    "searchGroundingQuery": "BTK Turkey post-quantum cryptography telecom guidelines",
+    "tags": [
+      "PostQuantum",
+      "PQC",
+      "TelecomBackbone",
+      "NISTStandards"
+    ],
+    "keyObligations": [
+      "Inventory analysis of all RSA and ECC certificates protecting critical state communications",
+      "Dual-mode hybrid quantum-resistant key exchange protocol testing on 5G Core networks",
+      "Submission of 3-year migration plan to BTK cyber defense department by end of Q2 2026"
+    ],
+    "affectedSectors": [
+      "Telecommunications & 5G",
+      "Defense & National Security",
+      "Cloud Infrastructure"
+    ]
+  },
+  {
+    "id": "news-egypt-eg-dpa-consent-2026",
+    "title": "Egypt Data Protection Center Issues Guidelines on Cross-Border Data Transfer Adequacy",
+    "summary": "The Egyptian Data Protection Center (DPC) under Law No. 151/2020 has clarified standards for cross-border data transfer permits, standard contractual clauses (SCCs), and the appointment of licensed Egyptian Data Protection Officers for international tech multinationals.",
+    "jurisdiction": "Egypt",
+    "countryCode": "eg",
+    "countryFlag": "🇪🇬",
+    "authority": "DPC Egypt",
+    "category": "Data Privacy & Cloud",
+    "impactLevel": "Medium",
+    "sentiment": "Neutral",
+    "sentimentRationale": "Administrative clarification and operational guidance supporting existing Law 151 compliance workflows.",
+    "publishedAt": "2026-03-12T16:00:00Z",
+    "timeAgo": "6 days ago",
+    "sourceName": "Egypt Today",
+    "sourceUrl": "https://mcit.gov.eg/en/Regulations_and_Policies/Laws",
+    "searchGroundingQuery": "Egypt Data Protection Law 151 cross-border transfer permit guidelines",
+    "tags": [
+      "DataPrivacy",
+      "CrossBorder",
+      "DPO",
+      "Law151"
+    ],
+    "keyObligations": [
+      "Submission of formal transfer adequacy filings for EU and US hosted customer databases",
+      "Registration of local corporate Data Protection Officers with the DPC registry",
+      "Implementation of user consent revocation mechanisms with zero processing friction"
+    ],
+    "affectedSectors": [
+      "E-Commerce & Retail",
+      "Cloud & Software Services",
+      "Telecom & BPO"
+    ]
+  },
+  {
+    "id": "news-oman-tra-satellite-telecom-2026",
+    "title": "Oman TRA Enforces Cybersecurity Baseline for Low-Earth Orbit (LEO) Satellite Services",
+    "summary": "The Telecommunications Regulatory Authority (TRA) of Oman announced binding technical and security conditions for commercial satellite broadband providers, requiring sovereign ground station routing and local lawful interception telemetry interfaces.",
+    "jurisdiction": "Oman",
+    "countryCode": "om",
+    "countryFlag": "🇴🇲",
+    "authority": "TRA Oman",
+    "category": "Telecom & Cross-Border",
+    "impactLevel": "Advisory",
+    "sentiment": "Neutral",
+    "sentimentRationale": "Routine baseline technical notice establishing harmonized operator conditions without retroactive penalties.",
+    "publishedAt": "2026-03-10T09:00:00Z",
+    "timeAgo": "1 week ago",
+    "sourceName": "Oman News Agency (ONA)",
+    "sourceUrl": "https://www.tra.gov.om/",
+    "searchGroundingQuery": "Oman TRA satellite internet cybersecurity regulations 2026",
+    "tags": [
+      "SatelliteInternet",
+      "LEO",
+      "TelecomLicensing",
+      "NationalSovereignty"
+    ],
+    "keyObligations": [
+      "Downlink of in-country subscriber traffic through licensed Omani earth stations",
+      "End-to-end cryptographic integrity verification across satellite-to-ground radio links",
+      "Compliance with National Computer Emergency Readiness Team (OCERT) incident protocols"
+    ],
+    "affectedSectors": [
+      "Telecommunications & Satellite",
+      "Maritime & Aviation",
+      "Energy Operations"
+    ]
+  },
+  {
+    "id": "news-bahrain-cbb-ai-ethics-2026",
+    "title": "Central Bank of Bahrain (CBB) Issues AI Governance Directive for Financial Institutions",
+    "summary": "The Central Bank of Bahrain released a comprehensive circular outlining expectations for artificial intelligence and algorithmic credit scoring, requiring board-level accountability and explainable AI mechanisms for loan underwriting.",
+    "jurisdiction": "Bahrain",
+    "countryCode": "bh",
+    "countryFlag": "🇧🇭",
+    "authority": "CBB",
+    "category": "AI Governance",
+    "impactLevel": "High",
+    "sentiment": "Consultation Phase",
+    "sentimentRationale": "Supervisory circular setting governance expectations with industry feedback requested before formal inspection audits.",
+    "publishedAt": "2026-03-08T11:45:00Z",
+    "timeAgo": "1 week ago",
+    "sourceName": "Bahrain News Agency (BNA)",
+    "sourceUrl": "https://www.cbb.gov.bh/",
+    "searchGroundingQuery": "Central Bank of Bahrain CBB AI governance credit scoring circular",
+    "tags": [
+      "AIGovernance",
+      "FinTech",
+      "CreditScoring",
+      "ExplainableAI"
+    ],
+    "keyObligations": [
+      "Establishment of dedicated AI Risk Committee reporting directly to the Board of Directors",
+      "Prohibition of automated loan denials without accessible human reconsideration avenues",
+      "Mandatory annual algorithmic fairness and anti-discrimination auditing"
+    ],
+    "affectedSectors": [
+      "Banking & Financial Services",
+      "Microfinance & Consumer Credit",
+      "InsurTech"
+    ]
+  }
+]

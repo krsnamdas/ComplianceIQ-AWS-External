@@ -1,0 +1,165 @@
+[
+  {
+    "id": "upd-ksa-pdpl-transfer",
+    "countryId": "ksa",
+    "countryName": "Saudi Arabia",
+    "title": "SDAIA Releases Revised Standard Contractual Clauses (SCCs) for Cross-Border Data Transfers",
+    "authority": "Saudi Data & AI Authority (SDAIA)",
+    "type": "Regulatory Amendment",
+    "category": "tech_data_privacy",
+    "publicationDate": "2024-09-08",
+    "effectiveDate": "2024-09-14",
+    "status": "Active",
+    "impactLevel": "Critical",
+    "targetSectors": [
+      "Cloud & Hyperscalers",
+      "Banking",
+      "Fintech",
+      "Retail & E-Commerce",
+      "Digital Tech Startups"
+    ],
+    "summary": "SDAIA issued the binding executive clauses and regulatory instructions governing the transfer of personal data outside Saudi Arabia, mandating data transfer impact assessments and compliance registration on the National Data Governance Platform.",
+    "keyRequirements": [
+      "Conduct a mandatory Cross-Border Transfer Risk Assessment before export",
+      "Register SCC agreements on SDAIA official portal within 30 days of execution",
+      "Ensure foreign jurisdiction laws do not impair data subject rights under Saudi PDPL"
+    ],
+    "sourceUrl": "https://sdaia.gov.sa/en/SDAIA/about/Documents/Personal%20Data%20English%20V2-23April2023-%20Reviewed-.pdf",
+    "verifiedOfficialSource": true
+  },
+  {
+    "id": "upd-uae-cbuae-open-fin",
+    "countryId": "uae",
+    "countryName": "United Arab Emirates",
+    "title": "CBUAE Open Finance Regulatory Framework Consultation & Technical Architecture",
+    "authority": "Central Bank of the UAE (CBUAE)",
+    "type": "Public Consultation",
+    "category": "tech_fintech_payments",
+    "publicationDate": "2024-08-25",
+    "effectiveDate": "2025-01-01",
+    "status": "Under Discussion",
+    "impactLevel": "High",
+    "targetSectors": [
+      "Banking",
+      "Fintech",
+      "Payments",
+      "Insurance"
+    ],
+    "summary": "The Central Bank of the UAE published draft technical specifications for the national Open Finance platform, standardizing RESTful APIs, FAPI 2.0 security profiles, and customer consent architectures across commercial banks and FinTechs.",
+    "keyRequirements": [
+      "Implementation of OAuth 2.0 with Financial-grade API (FAPI 2.0) profile",
+      "Mandatory mutual TLS (mTLS) for all inter-institution microservice communication",
+      "Fine-grained customer consent management with revocable tokens"
+    ],
+    "sourceUrl": "https://www.centralbank.ae/en/regulations-and-standards/",
+    "verifiedOfficialSource": true
+  },
+  {
+    "id": "upd-tr-spk-crypto-guidance",
+    "countryId": "turkiye",
+    "countryName": "Türkiye",
+    "title": "SPK Issues Implementing Communiqué for Crypto Asset Service Providers under Law 7518",
+    "authority": "Capital Markets Board (SPK)",
+    "type": "New Standard",
+    "category": "tech_fintech_payments",
+    "publicationDate": "2024-07-28",
+    "effectiveDate": "2024-10-01",
+    "status": "Upcoming",
+    "impactLevel": "Critical",
+    "targetSectors": [
+      "Fintech",
+      "Digital Tech Startups",
+      "Financial Services"
+    ],
+    "summary": "Following the enactment of Law No. 7518 in July 2024, the SPK issued operational criteria requiring all crypto exchanges operating in Türkiye to apply for temporary transition licensing, establish domestic corporate entities, and separate user fiat holdings in authorized banks.",
+    "keyRequirements": [
+      "Minimum capital adequacy requirement of 50 million TRY",
+      "Audited cold storage custody protocols certified by TÜBİTAK",
+      "Suspension of leveraged or derivative crypto asset instruments for retail clients"
+    ],
+    "sourceUrl": "https://spk.gov.tr/",
+    "verifiedOfficialSource": true
+  },
+  {
+    "id": "upd-ksa-nca-otcc-update",
+    "countryId": "ksa",
+    "countryName": "Saudi Arabia",
+    "title": "NCA Drafts Cybersecurity Verification Framework for Industrial IoT in Utilities and Energy",
+    "authority": "National Cybersecurity Authority (NCA)",
+    "type": "Public Consultation",
+    "category": "tech_ot_ics",
+    "publicationDate": "2024-07-15",
+    "effectiveDate": "2025-03-31",
+    "status": "Draft",
+    "impactLevel": "High",
+    "targetSectors": [
+      "Utilities",
+      "Oil & Gas",
+      "Power & Energy",
+      "Manufacturing"
+    ],
+    "summary": "NCA opened public consultation on supplementary technical specifications to OTCC-1:2022, detailing security validation requirements for cellular NB-IoT smart water/electricity meters, remote terminal units (RTUs), and substation automation.",
+    "keyRequirements": [
+      "Hardware secure element (eSE/TPM) for cryptographic identity storage in meters",
+      "Over-the-air (OTA) encrypted firmware updates with digital signature verification",
+      "Complete air-gapping of critical grid telemetry from public cellular networks"
+    ],
+    "sourceUrl": "https://www.nca.gov.sa/regulations-and-standards/otcc/",
+    "verifiedOfficialSource": true
+  },
+  {
+    "id": "upd-qatar-ncsa-genai",
+    "countryId": "qatar",
+    "countryName": "Qatar",
+    "title": "NCSA Issues National Cybersecurity Guidelines for Enterprise Generative AI Adoption",
+    "authority": "National Cyber Security Agency (NCSA)",
+    "type": "New Standard",
+    "category": "tech_ai",
+    "publicationDate": "2024-06-18",
+    "effectiveDate": "2024-07-01",
+    "status": "Active",
+    "impactLevel": "Medium",
+    "targetSectors": [
+      "Government",
+      "Banking",
+      "Telco",
+      "Healthcare",
+      "Cloud & Hyperscalers"
+    ],
+    "summary": "Guidelines targeting public sector organizations and critical infrastructure adopting Large Language Models (LLMs), outlining strict guardrails to prevent sensitive data leakage through external prompt injection and training ingestion.",
+    "keyRequirements": [
+      "Ban on submitting classified or personal data to public multi-tenant AI endpoints",
+      "Implementation of prompt firewall filters scanning for PII and corporate secrets",
+      "Model watermarking and provenance tracking for government-generated content"
+    ],
+    "sourceUrl": "https://www.ncsa.gov.qa/en/regulations-standards",
+    "verifiedOfficialSource": true
+  },
+  {
+    "id": "upd-bahrain-cbb-quantum",
+    "countryId": "bahrain",
+    "countryName": "Bahrain",
+    "title": "CBB Circular on Post-Quantum Cryptography (PQC) Readiness for Financial Institutions",
+    "authority": "Central Bank of Bahrain (CBB)",
+    "type": "Enforcement / Circular",
+    "category": "tech_space_quantum",
+    "publicationDate": "2024-05-30",
+    "effectiveDate": "2026-12-31",
+    "status": "Upcoming",
+    "impactLevel": "High",
+    "targetSectors": [
+      "Banking",
+      "Payments",
+      "Financial Services",
+      "Fintech"
+    ],
+    "summary": "CBB issued circular directing all retail and wholesale banks to formulate a cryptographic asset inventory and multi-year migration roadmap toward NIST-approved Post-Quantum Cryptography (ML-KEM, ML-DSA) algorithms.",
+    "keyRequirements": [
+      "Catalog all legacy RSA-2048 and ECC public key infrastructure in use",
+      "Assess quantum vulnerability of long-term archived customer transaction records",
+      "Formulate hybrid classical-quantum key exchange pilot implementations by Q4 2025"
+    ],
+    "sourceUrl": "https://www.cbb.gov.bh/laws-regulations/",
+    "verifiedOfficialSource": true
+  }
+]

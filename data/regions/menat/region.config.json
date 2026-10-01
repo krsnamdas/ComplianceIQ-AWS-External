@@ -1,0 +1,6 @@
+{
+  "regionId": "menat",
+  "regionLabel": "Middle East, North Africa & Türkiye",
+  "benchmarkDate": "2026-09-22",
+  "notes": "benchmarkDate is the 'current date' anchor used for deadline / urgency / watchlist calculations. Change it (e.g. to the deployment date for a new region) via the Admin Panel or by editing this file."
+}
