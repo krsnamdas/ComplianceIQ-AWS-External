@@ -268,3 +268,46 @@ Secrets/Bedrock (set `natGateways: 0` in CDK) — a follow-up optimization.
   task is x86_64 (or vice-versa). Rebuild with the matching `--platform`.
 - **Bedrock AccessDenied** → the model isn't enabled in this account/region, or
   the region in `AWS_REGION` doesn't offer that model. Enable model access.
+
+---
+
+## v3.0 Deploy Notes (2026-10-07)
+
+A few things changed since this guide's original "private / internal-only" framing. The current non-prod stack is a **public, Cognito+MFA-gated ALB** (not internal-only), and the v3.0 release adds document storage, an encrypted audit log, and bcrypt auth. Deploy steps are otherwise the same.
+
+### New required / relevant environment
+
+| Variable | Editions | Purpose |
+|----------|----------|---------|
+| `DOCUMENTS_BUCKET` | AWS normal / External | Private S3 bucket for documents + audit log. Set automatically by CDK on the task. |
+| `R2_ENDPOINT`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` | Gemini only | Cloudflare R2 (S3-compatible) for documents + audit log. Set in the Gemini deployment env (never committed). |
+| `TAVILY_API_KEY` | all | Web search (unchanged; Secrets Manager on AWS). |
+| `BEDROCK_MODEL_ID`, `AWS_REGION` | AWS | AI engine (unchanged). |
+
+### What CDK provisions in v3.0
+
+- A **private, encrypted S3 bucket** `complianceiq-<env>-documents-<account>` (BPA on, TLS-only, versioned, RETAIN) with the task role granted read/write.
+- The ALB Cognito **`SessionTimeout = 24h`**.
+- The task definition env now includes `DOCUMENTS_BUCKET`.
+
+### First-run seeding
+
+On the first boot of a new task, the server seeds `users.json` (bcrypt-hashed default accounts: `ciadmin1`, `ciadmin2`, `sasuser1`–`sasuser4`) and the other server-authoritative files onto the EFS volume. No manual step required. The in-container build installs **bcryptjs** (pure-JS; no native toolchain needed).
+
+### Deploy commands (reference)
+
+```bash
+export AWS_PROFILE=complianceiq AWS_REGION=us-east-1
+export ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+export IMAGE_URI=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/complianceiq:latest
+
+cd infra/cdk && npm install && npm run build
+npx cdk deploy -c envName=nonprod -c imageUri=$IMAGE_URI \
+  -c internalDomainName=complianceiq.internal -c bedrockModelId=amazon.nova-pro-v1:0 \
+  -c certificateArn=<ACM-ARN>
+cd ../..
+
+aws ecr get-login-password --region $AWS_REGION | finch login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+finch build --platform linux/amd64 -t $IMAGE_URI . && finch push $IMAGE_URI
+aws ecs update-service --cluster <cluster> --service <service> --force-new-deployment --region $AWS_REGION
+```

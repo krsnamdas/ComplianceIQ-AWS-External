@@ -1,19 +1,14 @@
-# ComplianceIQ — Infrastructure & Architecture Manual (AWS External Edition)
+# ComplianceIQ — Infrastructure & Architecture Manual (Non-Prod)
 
-> **Audience:** anyone deploying/operating ComplianceIQ in **their own AWS account**.
-> **Scope:** everything about the AWS environment — services, topology, how to deploy and
-> operate it, and known caveats. For the *application itself* see
-> **[`APPLICATION_MANUAL.md`](../APPLICATION_MANUAL.md)**; for the roadmap see
-> **[`FUTURE_DESIGN_CONSIDERATIONS.md`](./FUTURE_DESIGN_CONSIDERATIONS.md)**; for the
-> deploy-it-yourself quick start see **[`../README.md`](../README.md)**.
+> **Audience:** the admin/operator managing the AWS infrastructure that hosts ComplianceIQ.
+> **Scope:** everything about the AWS environment — services, topology, how it was built,
+> how to operate it, and known caveats. For the *application itself* (features, usage,
+> accounts) see **[`APPLICATION_MANUAL.md`](../APPLICATION_MANUAL.md)**. For planned
+> improvements see **[Future Design Considerations](#future-design-considerations)** below
+> (also kept in **[`FUTURE_DESIGN_CONSIDERATIONS.md`](./FUTURE_DESIGN_CONSIDERATIONS.md)**).
 >
-> **This is the EXTERNAL edition** — it has no dependency on any internal/Isengard tooling or
-> any specific person's access. You bring your own AWS account, Bedrock access, and Tavily key.
-> The concrete IDs below (account, ARNs, DNS) are **examples from a reference deployment** —
-> yours will differ; substitute your own values.
->
-> **Reading cold: start at [§1 TL;DR](#1-tldr--what-this-is) and
-> [§13 Operations runbook](#13-operations-runbook).**
+> **If you are reading this cold (e.g. after time away): start at
+> [§1 TL;DR](#1-tldr--what-this-is) and [§13 Operations runbook](#13-operations-runbook).**
 
 ---
 
@@ -39,45 +34,42 @@
 ## 1. TL;DR — what this is
 
 ComplianceIQ is a containerized web app (React SPA + Express API) running on **AWS ECS
-Fargate**, in **your own AWS account**. It is reached over the public internet at an **HTTPS
-URL**, but **gated by Amazon Cognito with mandatory MFA** before any request reaches the app.
-Infrastructure is defined as code with **AWS CDK (TypeScript)**, which deploys
-**CloudFormation** under the hood.
+Fargate**, in a **personal Isengard non-prod account**. It is reached over the public
+internet at an **HTTPS URL**, but **gated by Amazon Cognito with mandatory MFA** before any
+request reaches the app. Infrastructure is defined as code with **AWS CDK (TypeScript)**,
+which deploys **CloudFormation** under the hood.
 
-- **Public URL:** your ALB DNS (or your custom domain) — printed as the `PublicUrl` stack output
-- **Account / Region:** *your* account / your chosen region (examples below use `us-east-1`)
+- **Public URL:** `https://compli-alb16-6eesite0yiky-1926867226.us-east-1.elb.amazonaws.com/`
+- **Account / Region:** `192425633190` / `us-east-1`
 - **IaC:** `infra/cdk/` (app stack) + `infra/foundation/foundation.yaml` (account baseline)
 - **Auth:** Cognito user pool (MFA/TOTP required) → then the app's own local login
-- **AI:** Amazon Bedrock (`amazon.nova-pro-v1:0`, swappable) + Tavily web search (your key)
-- **Deploy guide:** see [`../README.md`](../README.md) for the step-by-step quick start.
+- **AI:** Amazon Bedrock (`amazon.nova-pro-v1:0`) + Tavily web search
 
 ---
 
 ## 2. Key identifiers
 
-The values below are **examples from a reference deployment** — **yours will differ**. After
-you deploy, fill in your own from the stack outputs (`PublicUrl`, `AlbDnsName`,
-`CognitoUserPoolId`, `EfsFileSystemId`, `VpcId`, `TavilySecretName`).
+Copy-paste reference for everything you'll need to operate this.
 
-| Thing | Value (example — replace with yours) |
+| Thing | Value |
 |---|---|
-| AWS Account ID | *your account id* |
-| Region | `us-east-1` (your choice) |
-| CLI profile | your AWS CLI profile (`aws configure` / SSO) |
+| AWS Account ID | `192425633190` |
+| Region | `us-east-1` |
+| CLI profile | `krishmd` (Isengard; refresh with `mwinit` then `aws login --profile krishmd`) |
 | App CloudFormation stack | `ComplianceIQ-nonprod` |
 | Foundation stack | `complianceiq-foundation-nonprod` |
-| Public app URL | `https://<YOUR_ALB_DNS_OR_DOMAIN>/` |
-| ALB DNS | `<YOUR_ALB_DNS_OR_DOMAIN>` |
+| Public app URL | `https://compli-alb16-6eesite0yiky-1926867226.us-east-1.elb.amazonaws.com/` |
+| ALB DNS | `compli-alb16-6eesite0yiky-1926867226.us-east-1.elb.amazonaws.com` |
 | VPC ID | `vpc-08e469db1cdcfd9eb` |
-| ECR repo | `complianceiq` (`<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/complianceiq:latest`) |
+| ECR repo | `complianceiq` (`192425633190.dkr.ecr.us-east-1.amazonaws.com/complianceiq:latest`) |
 | ECS cluster / service | `ComplianceIQ-nonprod-Cluster...` / `ComplianceIQ-nonprod-Service...` (discover via CLI) |
-| Cognito User Pool ID | `<USER_POOL_ID>` |
+| Cognito User Pool ID | `us-east-1_lykHzDirh` |
 | Cognito App Client ID | `6cnjcbtvs3r18g26uk5tbv89o9` |
-| Cognito hosted-UI domain prefix | `complianceiq-nonprod-<ACCOUNT_ID>` |
+| Cognito hosted-UI domain prefix | `complianceiq-nonprod-192425633190` |
 | Tavily secret (Secrets Manager) | `complianceiq/nonprod/tavily-api-key` |
 | EFS file system | `fs-0ad6b114155b99c72` (mounted at `/app/data`) |
 | CloudWatch log group | `/complianceiq/nonprod` |
-| ACM cert (self-signed) | `arn:aws:acm:<region>:<ACCOUNT_ID>:certificate/<CERT_ID>` |
+| ACM cert (self-signed) | `arn:aws:acm:us-east-1:<ACCOUNT_ID>:certificate/<CERT_ID>` (look up the live ARN with `aws acm list-certificates`) |
 | Bedrock model | `amazon.nova-pro-v1:0` |
 
 > **Note:** ECS cluster/service names carry random suffixes. Discover them with:
@@ -96,7 +88,7 @@ you deploy, fill in your own from the stack outputs (`PublicUrl`, `AlbDnsName`,
                                       │  HTTPS (443)   [HTTP:80 → 301 redirect to 443]
                                       ▼
 ┌──────────────────────────────────────────────────────────────────────────────────┐
-│  AWS Account <ACCOUNT_ID> · Region us-east-1                                        │
+│  AWS Account 192425633190 · Region us-east-1                                        │
 │                                                                                     │
 │  VPC vpc-08e469db1cdcfd9eb  (2 Availability Zones)                                   │
 │  ┌───────────────────────────────────────────────────────────────────────────────┐│
@@ -107,7 +99,7 @@ you deploy, fill in your own from the stack outputs (`PublicUrl`, `AlbDnsName`,
 │  │        │  listener :80  → redirect :443          │                               ││
 │  │        │  listener :443 (ACM self-signed cert)   │                               ││
 │  │        │     └─ action: authenticate-cognito ────┼──► Cognito User Pool          ││
-│  │        │          (MFA/TOTP) then forward         │     <USER_POOL_ID>       ││
+│  │        │          (MFA/TOTP) then forward         │     us-east-1_lykHzDirh       ││
 │  │        ▼                                          │     + hosted UI domain        ││
 │  │   Target Group (HTTP :3000, health /api/health)   │                               ││
 │  └────────┼──────────────────────────────────────────┼──────────────────────────────┘│
@@ -173,8 +165,8 @@ Two independent auth layers: **Cognito+MFA (network edge)** → **app local logi
 | 3 | **NAT Gateway** | 1 (in public subnet) | Outbound-only egress for the private tier (Bedrock/Tavily) |
 | 4 | **VPC Block Public Access** | account-level `block-ingress` + 2 subnet exclusions | Blocks inbound internet account-wide; public subnets excluded so the ALB works |
 | 5 | **Application Load Balancer** | internet-facing, in public subnets | Entry point; TLS termination; Cognito auth; 80→443 redirect |
-| 6 | **ACM** | self-signed cert `(your imported cert)` | TLS cert for the HTTPS listener (CN `complianceiq.nonprod.internal`) |
-| 7 | **Cognito User Pool** | `<USER_POOL_ID>` | Auth gate; MFA required (TOTP); hosted UI; self-signup disabled |
+| 6 | **ACM** | self-signed cert `...15d77c4a...` | TLS cert for the HTTPS listener (CN `complianceiq.nonprod.internal`) |
+| 7 | **Cognito User Pool** | `us-east-1_lykHzDirh` | Auth gate; MFA required (TOTP); hosted UI; self-signup disabled |
 | 8 | **ECS (Fargate)** | cluster + service, `desiredCount=1` | Runs the container; Container Insights; circuit breaker w/ rollback |
 | 9 | **ECR** | repo `complianceiq` | Stores the app image (foundation-owned) |
 | 10 | **EFS** | `fs-0ad6b114155b99c72` | Persistent `/app/data`; encrypted; access point uid/gid 1000 |
@@ -247,18 +239,14 @@ short-lived non-prod test with no customer data; see caveats + future considerat
   via NAT (to reach Bedrock/Tavily).
 - **`isolated-data` (PRIVATE_ISOLATED)** — EFS. No internet at all, inbound or outbound.
 
-**VPC Block Public Access (BPA) — usually NOT applicable:** Most commercial AWS accounts do
-**not** enforce VPC BPA, so the internet-facing ALB is reachable with no extra step. **Only if
-your account enforces BPA** in `block-ingress` mode will inbound be blocked at the VPC level;
-in that case add an exclusion (`allow-bidirectional`) on the public subnets:
+**VPC Block Public Access (BPA):** The account has BPA in `block-ingress` mode
+(`ManagedBy: account`). This is why nothing inbound worked until we created exclusions.
+Two exclusions exist (`allow-bidirectional`) on the public subnets. Check/manage:
 ```bash
-# check whether BPA is enforced on your account/region
-aws ec2 describe-vpc-block-public-access-options --region "$AWS_REGION"
-# only if block-ingress is on: exclude each public subnet
-aws ec2 create-vpc-block-public-access-exclusion --region "$AWS_REGION" \
-  --subnet-id <public-subnet-id> --internet-gateway-exclusion-mode allow-bidirectional
+aws ec2 describe-vpc-block-public-access-options --region us-east-1
+aws ec2 describe-vpc-block-public-access-exclusions --max-results 50 --region us-east-1
 ```
-**If BPA applies and you rebuild the ALB/subnets, recreate the exclusions.**
+**If you ever tear down and rebuild the ALB/subnets, you must recreate the exclusions.**
 
 **Why the NAT gateway exists:** the app must call Tavily (and reach Bedrock's public
 endpoint) *outbound*. NAT provides that egress. NAT is **outbound-only** — it does not and
@@ -268,31 +256,28 @@ cannot accept inbound connections. Inbound is the ALB's job.
 
 ## 9. Authentication (Cognito + MFA)
 
-- **User pool:** `<USER_POOL_ID>` (`complianceiq-nonprod`). MFA **REQUIRED** (TOTP only,
+- **User pool:** `us-east-1_lykHzDirh` (`complianceiq-nonprod`). MFA **REQUIRED** (TOTP only,
   no SMS). Self-signup **disabled** — operators create users. Email is the username/alias.
   Password policy: 12+ chars, upper/lower/digit/symbol.
 - **App client:** `6cnjcbtvs3r18g26uk5tbv89o9`, has a client secret (required for ALB auth),
   authorization-code flow, scopes `openid email`.
-- **Callback URLs (important — host casing):** browsers lowercase the host and Cognito matches
-  callbacks case-sensitively. This edition handles it two ways:
-  - **With a custom domain** (`-c appDomainName=app.your-domain.com`): the callback is a clean,
-    stable `https://app.your-domain.com/oauth2/idpresponse`. **Recommended.**
-  - **Without a domain** (raw ALB DNS): after deploy, run
-    `infra/scripts/add-cognito-callback.sh` to register the lowercase ALB callback (the script
-    derives it dynamically — nothing is hardcoded).
-- **Hosted UI domain:** `complianceiq-<env>-<accountId>.auth.<region>.amazoncognito.com`.
+- **Callback URLs:** BOTH the mixed-case ALB DNS and a **lowercase literal** are registered.
+  This is deliberate — browsers lowercase the host and Cognito matches callbacks
+  case-sensitively. **If the ALB is replaced (new DNS), update the lowercase literal in
+  `complianceiq-stack.ts` and redeploy.**
+- **Hosted UI domain:** `complianceiq-nonprod-192425633190.auth.us-east-1.amazoncognito.com`.
 
 **Managing users** (console: Cognito → `complianceiq-nonprod` → Users; or CLI):
 ```bash
 # create a user (operator sets a temp password; forced change + MFA enroll on first login)
 aws cognito-idp admin-create-user --region us-east-1 \
-  --user-pool-id <USER_POOL_ID> \
+  --user-pool-id us-east-1_lykHzDirh \
   --username USER@amazon.com \
   --user-attributes Name=email,Value=USER@amazon.com Name=email_verified,Value=true \
   --desired-delivery-mediums EMAIL
 # set a known temp password if the invite email doesn't arrive
 aws cognito-idp admin-set-user-password --region us-east-1 \
-  --user-pool-id <USER_POOL_ID> --username USER@amazon.com \
+  --user-pool-id us-east-1_lykHzDirh --username USER@amazon.com \
   --password 'TempPass!2026Xy' --no-permanent
 ```
 Current tester emails: `krishmd@amazon.ae`, `heladel@amazon.ae`, `mvvarbai@amazon.co.uk`,
@@ -380,23 +365,23 @@ Chronological summary of the actual deployment, including the bugs fixed along t
 ```bash
 mwinit
 aws login --profile krishmd
-aws sts get-caller-identity --profile krishmd    # expect account <ACCOUNT_ID>
+aws sts get-caller-identity --profile krishmd    # expect account 192425633190
 export AWS_PROFILE=krishmd AWS_REGION=us-east-1
 ```
 
 **Standard env vars for CDK work:**
 ```bash
 export AWS_PROFILE=krishmd AWS_REGION=us-east-1
-export ACCOUNT_ID=<ACCOUNT_ID> CDK_DEFAULT_ACCOUNT=<ACCOUNT_ID> CDK_DEFAULT_REGION=us-east-1
-export IMAGE_URI="<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/complianceiq:latest"
-export CERT_ARN="arn:aws:acm:<region>:<ACCOUNT_ID>:certificate/<CERT_ID>"
+export ACCOUNT_ID=192425633190 CDK_DEFAULT_ACCOUNT=192425633190 CDK_DEFAULT_REGION=us-east-1
+export IMAGE_URI="192425633190.dkr.ecr.us-east-1.amazonaws.com/complianceiq:latest"
+export CERT_ARN="$(aws acm list-certificates --region us-east-1 --query "CertificateSummaryList[0].CertificateArn" --output text)"   # or paste your cert ARN
 ```
 
 **Deploy a code or infra change (new app version):**
 ```bash
 # 1. rebuild & push the image
 finch build --platform linux/amd64 -t "$IMAGE_URI" .
-aws ecr get-login-password --region us-east-1 | finch login --username AWS --password-stdin <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com
+aws ecr get-login-password --region us-east-1 | finch login --username AWS --password-stdin 192425633190.dkr.ecr.us-east-1.amazonaws.com
 finch push "$IMAGE_URI"
 # 2. roll the service to the new image
 CLUSTER=$(aws ecs list-clusters --region us-east-1 --query "clusterArns[?contains(@,'ComplianceIQ-nonprod')]" --output text)
@@ -469,3 +454,77 @@ In brief, planned/optional improvements:
 - **VPC endpoints** (drop NAT), **autoscaling**, **CI/CD**, **tighter IAM**
 
 See that document for *what specifically changes* in the current implementation to enable each.
+
+---
+
+## 15. v3.0 Infrastructure Additions (2026-10-07)
+
+This section records the infrastructure changes added in the v3.0 release. They are additive — the topology in §3 still holds, with the additions below.
+
+### 15.1 New: private documents + audit S3 bucket
+
+A new **private S3 bucket** `complianceiq-nonprod-documents-192425633190` was added to the CDK application stack (`infra/cdk/lib/complianceiq-stack.ts`):
+
+- **Encryption:** SSE-S3 (AES-256) at rest.
+- **Public access:** Block Public Access = ON (all four settings).
+- **Transport:** TLS-only (bucket policy denies non-HTTPS requests, `aws:SecureTransport=false`).
+- **Versioning:** ON (recoverable overwrites/deletes).
+- **Removal policy:** `RETAIN` (documents survive stack deletion; delete manually if decommissioning).
+- **Contents:** uploaded regulation documents under `<region>/regulations/<regulationId>/…` and the audit log under `<region>/audit-logs/audit-log.jsonl`.
+- **Access:** the **ECS task IAM role** is granted `grantReadWrite` on the bucket (covers Get/Put/Delete/List and the `audit-logs/` prefix). Reads/writes are proxied by the app — the bucket is never public.
+- **Wiring:** the bucket name is passed to the container as the `DOCUMENTS_BUCKET` environment variable; the app's `documentStore.ts` / `auditStore.ts` use it. If unset (local dev) the app falls back to local disk.
+
+Updated topology (addition to the PRIVATE/task tier):
+
+```
+   Task Role ──► S3 (complianceiq-nonprod-documents-<account>)   [NEW]
+        • PutObject/GetObject/DeleteObject/ListBucket (private, SSE)
+        • documents:  <region>/regulations/<id>/<docId>.<ext>
+        • audit log:  <region>/audit-logs/audit-log.jsonl
+   env: + DOCUMENTS_BUCKET=complianceiq-nonprod-documents-<account>   [NEW]
+```
+
+### 15.2 Changed: ALB Cognito session timeout = 24h
+
+The HTTPS listener's `authenticate-cognito` default action now sets **`SessionTimeout = 86400` seconds (24h)**. Previously it used the ALB default (7 days). The ALB now forces Cognito re-authentication (with MFA) at least once per day.
+
+Generated CloudFormation (`AWS::ElasticLoadBalancingV2::Listener` → `DefaultActions[0].AuthenticateCognitoConfig`):
+
+```yaml
+AuthenticateCognitoConfig:
+  SessionTimeout: "86400"      # 24 hours
+  UserPoolArn: !GetAtt UserPool.Arn
+  UserPoolClientId: !Ref UserPoolAlbClient
+  UserPoolDomain: !Ref UserPoolDomain
+Type: authenticate-cognito
+```
+
+### 15.3 Changed: new runtime data on EFS
+
+The EFS data volume (`/app/data`, `data/regions/<REGION>/`) now also holds the v3.0 server-authoritative state, seeded on first run and git-ignored:
+`users.json` (bcrypt hashes), `link-suggestions.json`, `regulation-suggestions.json`, `countries.json`, `feature-flags.json`, `broadcast.json`. These are backed up with the rest of EFS via AWS Backup. The audit log and documents live in S3 (§15.1), not EFS.
+
+### 15.4 Dependency
+
+**bcryptjs** (pure-JavaScript bcrypt) was added to the application dependencies. It requires no native compilation, so the `node:20-alpine` multi-stage image builds unchanged.
+
+### 15.5 Deploy procedure (unchanged shape)
+
+The v3.0 changes deploy with the same flow as before:
+
+```bash
+# 1. infra (creates the S3 bucket + 24h Cognito timeout)
+cd infra/cdk && npm install && npm run build
+npx cdk deploy -c envName=nonprod -c imageUri=$IMAGE_URI \
+  -c internalDomainName=complianceiq.internal -c bedrockModelId=amazon.nova-pro-v1:0 \
+  -c certificateArn=<ACM-ARN>
+cd ../..
+# 2. image (installs bcryptjs in-container) + 3. roll the service
+finch build --platform linux/amd64 -t $IMAGE_URI . && finch push $IMAGE_URI
+aws ecs update-service --cluster <cluster> --service <service> --force-new-deployment --region us-east-1
+```
+
+### 15.6 Other editions
+
+- **AWS External** (`ComplianceIQ-AWS-External`): identical infra to this non-prod stack (S3 bucket, Cognito 24h, EFS data).
+- **Gemini** (`ComplianceIQ-Gemini`): documents + audit log use **Cloudflare R2** (S3-compatible) via `R2_ENDPOINT` / `R2_BUCKET` / `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY`; region/app data uses the deployment's local disk/volume. No AWS S3 or EFS.

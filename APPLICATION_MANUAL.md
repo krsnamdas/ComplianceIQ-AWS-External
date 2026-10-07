@@ -60,7 +60,7 @@ AWS Bedrock (amazon.nova-pro-v1:0)   +   Tavily Search API (web search)
 ## 3. How to access the app
 
 **Deployed (AWS non-prod):**
-`https://<YOUR_ALB_DNS_OR_DOMAIN>/`
+`https://compli-alb16-6eesite0yiky-1926867226.us-east-1.elb.amazonaws.com/`
 
 First-time access flow (there are **two** login layers):
 1. **Browser cert warning** — the non-prod cert is self-signed. Click **Advanced → Proceed**.
@@ -80,7 +80,7 @@ There are **two separate identity systems** — don't confuse them:
 
 | Layer | Who/what | Credentials | Managed where |
 |---|---|---|---|
-| **Cognito (edge gate)** | Access control to even reach the app | Email + password + MFA | AWS Cognito pool `<USER_POOL_ID>` |
+| **Cognito (edge gate)** | Access control to even reach the app | Email + password + MFA | AWS Cognito pool `us-east-1_lykHzDirh` |
 | **App login (RBAC)** | In-app roles & permissions | App usernames | Inside the app (`RBACContext`) |
 
 **App accounts:**
@@ -275,3 +275,54 @@ Djibouti, Somalia, Comoros, Pakistan.
 
 *For infrastructure operations, deployment, and AWS service details, see
 [`infra/INFRASTRUCTURE_MANUAL.md`](./infra/INFRASTRUCTURE_MANUAL.md).*
+
+## 13. v3.0 Release — Documents, Multi-Admin Sync & Hardened Auth
+
+This section documents the capabilities added in the v3.0 release. They apply to all three editions (AWS normal, AWS External, Gemini), differing only in where files are stored (S3 on AWS, Cloudflare R2 on Gemini).
+
+### 13.1 Regulation documents (upload / download)
+
+Each regulation can carry attached documents (the regulation text, internal RCMs, controls libraries, etc.).
+
+- **All signed-in users** see an **Attached Documents** section on the regulation card and can **download** any document.
+- **Only admins** see the **Upload** control (card + the Edit Regulation modal in the admin console). Normal users never see an upload option.
+- Each document shows a type badge — **Regulation** or **Internal** — the file name (truncated if long, extension preserved), and a download action.
+- **Limits:** max **5 MB per file**, up to **10 documents per regulation**. Allowed types: pdf, doc, docx, xls, xlsx, csv, txt, ppt, pptx.
+- **Where files live:** a **private, encrypted** object-storage bucket (Amazon S3 on AWS editions; Cloudflare R2 on the Gemini edition). The bucket is never public — downloads are proxied by the app, so access is implicitly gated by the app login (and Cognito+MFA at the ALB on AWS).
+
+### 13.2 Login & accounts (bcrypt, server-side)
+
+- Login is verified **on the server** against a **bcrypt** password hash. Passwords are never stored in plaintext and the hash never reaches the browser.
+- The login screen shows **no example usernames or passwords**. There is **no one-click account switching** — to use a different account, **sign out and sign in** again.
+- **Default accounts:** admins `ciadmin1`, `ciadmin2`; normal users `sasuser1`–`sasuser4`. (Passwords are set by an operator and stored only as hashes.)
+- **Admin console** still requires its **second password gate** after an admin signs in.
+- **Change your own password:** account menu (top-right) → **Change Password**. After a successful change you are **signed out** and must log in again with the new password (the old password stops working immediately).
+
+### 13.3 User management (admin)
+
+- **Create user:** Admin Console → User Management → add a user with an initial password (stored as a bcrypt hash).
+- **Reset password:** the **Reset** action sets a brand-new password (no password is ever displayed or copied). The user's old password stops working.
+- **Edit / delete / suspend:** standard MACD operations. All user changes are **server-side** and **sync across all admins** (no per-browser divergence).
+- Passwords are **never displayed** anywhere in the UI (the user list shows "bcrypt-hashed").
+
+### 13.4 Multi-admin synchronization
+
+All admin-mutable data is **server-authoritative** and shared across every admin and device:
+
+- Users/roster, link suggestions, field-correction suggestions, broadcast banner, feature flags, countries/jurisdictions.
+- When one admin accepts/rejects a suggestion (or makes any change), it is resolved for **all** admins — no stale "pending" items and no overrides.
+- The admin console **refetches on open** and offers a **Refresh** button for on-demand updates (there is no background polling, so an admin already sitting on a screen clicks Refresh to pull the latest).
+
+### 13.5 Feature toggles
+
+- Feature toggles gate **normal users only**. **Admins always have access to every feature** regardless of toggle state.
+- The admin **Feature Toggles** tab still shows and edits the true on/off state; toggle state is server-authoritative and shared across admins (and survives restarts).
+
+### 13.6 Audit log
+
+- Every significant action is recorded to a **shared, server-side audit log** stored in object storage **encrypted at rest**.
+- Admin Console → **Audit Log** shows the shared trail (all admins' actions) and offers **Download Audit Log (CSV)** — a readable export of the complete log. A **Refresh** button pulls the latest.
+
+### 13.7 Session timeout (AWS editions)
+
+- The public ALB enforces **Cognito re-authentication (with MFA) at least every 24 hours**. After the session expires you are prompted to sign in again at the Cognito page before reaching the app.
