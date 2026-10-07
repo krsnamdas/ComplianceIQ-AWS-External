@@ -3,6 +3,7 @@ import { Regulation, RegulationRequirementsAnalysis, RequirementConfidenceResult
 import { useRBAC } from '../context/RBACContext';
 import { useAdmin } from '../context/AdminContext';
 import { SmartInsightCard } from './SmartInsightCard';
+import { RegulationDocuments } from './RegulationDocuments';
 import { SuggestLinkModal } from './SuggestLinkModal';
 import { SuggestCorrectionModal } from './SuggestCorrectionModal';
 import { calculateUrgencyScore } from '../utils/urgencyScore';
@@ -843,6 +844,10 @@ export const RegulationCard: React.FC<RegulationCardProps> = ({
             })()}
           </div>
         </div>
+
+        {/* Attached Documents (all users download; admins upload). Renders nothing
+            for non-admins when a regulation has no documents, so it is zero-impact. */}
+        <RegulationDocuments regulationId={regulation.id} regulationCode={regulation.code} />
 
         {/* Smart Insight Summary Card (Powered by Autonomous AI Model, Toggleable by Admin) */}
         {featureFlags?.smartInsights !== false && (

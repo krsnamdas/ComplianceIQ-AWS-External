@@ -62,11 +62,13 @@ export default function App() {
   // Whenever the active user account changes (switch user, sign in, sign out), redirect immediately to overview (main page)
   const prevUserIdRef = useRef(currentUser?.id);
   useEffect(() => {
-    if (prevUserIdRef.current && prevUserIdRef.current !== currentUser?.id) {
-      prevUserIdRef.current = currentUser?.id;
+    const nextId = currentUser?.id;
+    const prevId = prevUserIdRef.current;
+    if (prevId && nextId && prevId !== nextId) {
+      prevUserIdRef.current = nextId;
       setActiveTab('overview');
-    } else if (currentUser?.id) {
-      prevUserIdRef.current = currentUser.id;
+    } else if (nextId) {
+      prevUserIdRef.current = nextId;
     }
   }, [currentUser?.id]);
 

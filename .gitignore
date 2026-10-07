@@ -5,3 +5,8 @@ dist/
 bun.lock
 *.log
 .kiro/sessions/
+
+# Runtime-uploaded regulation documents (local dev storage fallback).
+# In AWS these live in the private S3 bucket, never in the repo.
+data/regions/*/documents/
+data/regions/*/documents.json

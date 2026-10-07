@@ -55,6 +55,10 @@ import { INITIAL_GROUNDED_NEWS } from './src/data/groundedNewsData.ts';
 import { GroundedNewsItem } from './src/types/news.ts';
 import { interpretControlSemantics } from './src/utils/controlInterpreterEngine.ts';
 import { analyzePolicyAgainstRegulation } from './src/utils/redlineEngine.ts';
+import {
+  loadDocuments, saveDocuments, putObject, getObject, deleteObject, localFileExists,
+  isS3Backed, RegulationDocument, RegulationDocType,
+} from './src/data/documentStore.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -789,6 +793,200 @@ async function startServer() {
       return res.status(500).json({ error: 'Failed to persist deletion.', details: persisted.error });
     }
     return res.json({ success: true, deletedId: id, total: REGULATIONS.length });
+  });
+
+  // ---------------------------------------------------------------------------
+  // API 3.doc: Regulation Documents (Option A — proxy upload/list/download).
+  //   - File bytes: private S3 bucket (DOCUMENTS_BUCKET) or local-disk fallback.
+  //   - Metadata:   region JSON file documents.json (file-backed, portable).
+  // Access model: the whole app sits behind Cognito+MFA at the ALB, so every
+  // onboarded user may LIST and DOWNLOAD. Upload/delete are admin actions — the
+  // UI hides them from non-admins (consistent with every other admin API here).
+  // These endpoints are additive and isolated; no existing route is modified.
+  // ---------------------------------------------------------------------------
+
+  // In-memory mirror of document metadata, seeded from the region file.
+  let documentsStore: RegulationDocument[] = loadDocuments();
+  console.log(
+    `[ComplianceIQ Documents] Loaded ${documentsStore.length} document record(s); ` +
+      `storage backend = ${isS3Backed() ? 'S3 (' + process.env.DOCUMENTS_BUCKET + ')' : 'local disk (no DOCUMENTS_BUCKET set)'}.`
+  );
+
+  const DOC_MAX_BYTES = 5 * 1024 * 1024; // 5 MB per file
+  const DOC_MAX_PER_REGULATION = 10; // max documents attached to one regulation
+  const ALLOWED_DOC_EXTS = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt', 'ppt', 'pptx'];
+
+  function persistDocuments(snapshot: RegulationDocument[]): { ok: boolean; error?: string } {
+    const res = saveDocuments(documentsStore);
+    if (!res.ok) {
+      documentsStore = snapshot; // roll back in-memory on persist failure
+    }
+    return res;
+  }
+
+  // List documents for a regulation (all authenticated app users).
+  app.get('/api/regulations/:id/documents', (req: Request, res: Response) => {
+    const { id } = req.params;
+    const docs = documentsStore
+      .filter((d) => d.regulationId === id)
+      .map(({ storageKey, storage, ...pub }) => pub); // never expose storage internals
+    res.json({ total: docs.length, documents: docs });
+  });
+
+  // Upload a document for a regulation (admin action; UI-gated).
+  // Body is the raw file bytes (application/octet-stream); metadata travels in
+  // query params so no multipart parser / new dependency is required.
+  app.post(
+    '/api/regulations/:id/documents',
+    express.raw({ type: 'application/octet-stream', limit: DOC_MAX_BYTES }),
+    // Convert body-parser's "payload too large" (and similar) into clean JSON
+    // instead of the default HTML error page, so the client can show a message.
+    (err: any, _req: Request, res: Response, next: (e?: any) => void) => {
+      if (err) {
+        if (err.type === 'entity.too.large' || err.status === 413) {
+          return res.status(413).json({ error: `File exceeds the ${DOC_MAX_BYTES / (1024 * 1024)}MB limit.` });
+        }
+        return res.status(400).json({ error: 'Invalid upload request.', details: err?.message });
+      }
+      next();
+    },
+    (req: Request, res: Response) => {
+      try {
+        const { id } = req.params;
+        const reg = REGULATIONS.find((r) => r.id === id);
+        if (!reg) {
+          return res.status(404).json({ error: `Regulation "${id}" not found.` });
+        }
+
+        // Enforce the per-regulation document cap server-side.
+        const existingCount = documentsStore.filter((d) => d.regulationId === id).length;
+        if (existingCount >= DOC_MAX_PER_REGULATION) {
+          return res.status(409).json({
+            error: `Document limit reached: a regulation can have at most ${DOC_MAX_PER_REGULATION} documents.`,
+          });
+        }
+
+        const fileName = String(req.query.fileName || '').trim();
+        const docTypeRaw = String(req.query.docType || 'regulation').trim().toLowerCase();
+        const displayNameRaw = String(req.query.displayName || '').trim();
+        const uploadedBy = String(req.query.uploadedBy || 'admin').trim().slice(0, 120);
+
+        if (!fileName) {
+          return res.status(400).json({ error: 'fileName query param is required.' });
+        }
+        const docType: RegulationDocType = docTypeRaw === 'internal' ? 'internal' : 'regulation';
+
+        const ext = (fileName.includes('.') ? fileName.split('.').pop() || '' : '').toLowerCase();
+        if (!ALLOWED_DOC_EXTS.includes(ext)) {
+          return res.status(400).json({
+            error: `File type ".${ext}" is not allowed. Allowed: ${ALLOWED_DOC_EXTS.join(', ')}.`,
+          });
+        }
+
+        const body = req.body as Buffer;
+        if (!Buffer.isBuffer(body) || body.length === 0) {
+          return res.status(400).json({ error: 'Empty upload body. Send the file as application/octet-stream.' });
+        }
+        if (body.length > DOC_MAX_BYTES) {
+          return res.status(413).json({ error: `File exceeds the ${DOC_MAX_BYTES / (1024 * 1024)}MB limit.` });
+        }
+
+        const docId = `doc-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+        const contentType = String(req.headers['x-file-content-type'] || 'application/octet-stream');
+        const displayName = (displayNameRaw || fileName.replace(/\.[^.]+$/, '')).slice(0, 200);
+
+        putObject(id, docId, ext, contentType, body)
+          .then(({ storageKey, storage }) => {
+            const record: RegulationDocument = {
+              id: docId,
+              regulationId: id,
+              docType,
+              displayName,
+              fileName: fileName.slice(0, 255),
+              ext,
+              contentType,
+              size: body.length,
+              storageKey,
+              storage,
+              uploadedBy,
+              uploadedAt: new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC',
+            };
+            const snapshot = [...documentsStore];
+            documentsStore = [record, ...documentsStore];
+            const persisted = persistDocuments(snapshot);
+            if (!persisted.ok) {
+              // best-effort cleanup of the just-written object
+              deleteObject(record).catch(() => null);
+              return res.status(500).json({ error: 'Failed to persist document metadata.', details: persisted.error });
+            }
+            const { storageKey: _sk, storage: _st, ...pub } = record;
+            return res.status(201).json({ success: true, document: pub });
+          })
+          .catch((err) => {
+            console.error('[Documents] Upload storage error:', err?.message || err);
+            return res.status(500).json({ error: 'Failed to store uploaded document.', details: err?.message });
+          });
+      } catch (err: any) {
+        console.error('[Documents] Upload handler error:', err?.message || err);
+        return res.status(500).json({ error: 'Unexpected upload failure.', details: err?.message });
+      }
+    }
+  );
+
+  // Download a document (all authenticated app users). Streams bytes via the app.
+  app.get('/api/documents/:docId/download', (req: Request, res: Response) => {
+    const { docId } = req.params;
+    const doc = documentsStore.find((d) => d.id === docId);
+    if (!doc) {
+      return res.status(404).json({ error: `Document "${docId}" not found.` });
+    }
+    // If the stored bytes are missing (e.g. removed out-of-band), return a clean
+    // 404 instead of a 500 so the UI can show a sensible "file unavailable" state.
+    if (!localFileExists(doc)) {
+      return res.status(404).json({
+        error: 'Document file is no longer available. It may have been removed; please re-upload.',
+      });
+    }
+    getObject(doc)
+      .then((buffer) => {
+        res.setHeader('Content-Type', doc.contentType || 'application/octet-stream');
+        res.setHeader(
+          'Content-Disposition',
+          `attachment; filename="${encodeURIComponent(doc.fileName)}"`
+        );
+        res.setHeader('Content-Length', String(buffer.length));
+        res.send(buffer);
+      })
+      .catch((err) => {
+        const msg = String(err?.message || err);
+        const missing = err?.name === 'NoSuchKey' || msg.includes('NoSuchKey') || msg.includes('ENOENT');
+        console.error('[Documents] Download error:', msg);
+        res.status(missing ? 404 : 500).json({
+          error: missing
+            ? 'Document file is no longer available. It may have been removed; please re-upload.'
+            : 'Failed to retrieve document.',
+          details: msg,
+        });
+      });
+  });
+
+  // Delete a document (admin action; UI-gated).
+  app.delete('/api/documents/:docId', (req: Request, res: Response) => {
+    const { docId } = req.params;
+    const doc = documentsStore.find((d) => d.id === docId);
+    if (!doc) {
+      return res.status(404).json({ error: `Document "${docId}" not found.` });
+    }
+    const snapshot = [...documentsStore];
+    documentsStore = documentsStore.filter((d) => d.id !== docId);
+    const persisted = persistDocuments(snapshot);
+    if (!persisted.ok) {
+      return res.status(500).json({ error: 'Failed to persist document deletion.', details: persisted.error });
+    }
+    deleteObject(doc).catch((err) => {
+      console.warn('[Documents] Object delete warning (metadata already removed):', err?.message || err);
+    });
+    return res.json({ success: true, deletedId: docId });
   });
 
   // API 4: Controls Crosswalk with Global Standard Mappings

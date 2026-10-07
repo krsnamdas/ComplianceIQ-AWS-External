@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useAdmin } from '../../context/AdminContext';
+import { RegulationDocuments } from '../RegulationDocuments';
 import { Regulation, RegulatoryCategory, SectorType, AuditFrequency, RegulationNature, ControlDetail } from '../../types/regulatory';
 import {
   AUDIT_FREQUENCY_OPTIONS,
@@ -685,7 +686,7 @@ export const RegulationEditorTab: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSaveEditRegulation} className="mt-4 space-y-4 text-xs">
+            <form id="edit-regulation-form" onSubmit={handleSaveEditRegulation} className="mt-4 space-y-4 text-xs">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-300 mb-1">Official Name *</label>
@@ -1130,23 +1131,40 @@ export const RegulationEditorTab: React.FC = () => {
                 )}
               </div>
 
-              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setEditingRegulation(null)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center space-x-1.5 cursor-pointer shadow-sm"
-                >
-                  <Save className="w-3.5 h-3.5" />
-                  <span>Update Regulation</span>
-                </button>
-              </div>
             </form>
+
+            {/* Attached Documents manager — rendered OUTSIDE the <form> on purpose,
+                so no upload/picker interaction can ever bubble into the form's
+                submit (which would save, close the modal, and navigate home).
+                Admins upload here; the docs also appear (download-only) on the
+                public regulation card for all onboarded users. */}
+            <div className="mt-4 pt-4 border-t border-slate-800">
+              <RegulationDocuments
+                regulationId={editingRegulation.id}
+                regulationCode={editingRegulation.code}
+              />
+            </div>
+
+            {/* Action buttons live AFTER the documents section (per request).
+                The submit button is tied to the form via the `form` attribute,
+                so it still submits even though it sits outside the <form>. */}
+            <div className="flex items-center justify-end space-x-2 pt-4 mt-4 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={() => setEditingRegulation(null)}
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                form="edit-regulation-form"
+                className="px-4 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center space-x-1.5 cursor-pointer shadow-sm"
+              >
+                <Save className="w-3.5 h-3.5" />
+                <span>Update Regulation</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

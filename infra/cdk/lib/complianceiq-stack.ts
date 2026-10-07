@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as efs from 'aws-cdk-lib/aws-efs';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
@@ -82,6 +83,24 @@ export class ComplianceIqStack extends cdk.Stack {
       description: 'Tavily Search API key for ComplianceIQ web search / news',
     });
 
+    // -------------------------------------------------------------------
+    // 2b. Documents bucket — stores regulation / internal documents that
+    //     admins upload. PRIVATE by design: all public access is blocked and
+    //     the ONLY principal granted access is the Fargate task role below.
+    //     The app proxies uploads/downloads (Option A), so onboarded Cognito
+    //     users reach documents THROUGH the Cognito+MFA-gated app — the bucket
+    //     itself is never exposed to the internet. Encrypted at rest (SSE-S3,
+    //     AES-256, on by default) + TLS-only + versioned for recoverability.
+    // -------------------------------------------------------------------
+    const documentsBucket = new s3.Bucket(this, 'DocumentsBucket', {
+      bucketName: `complianceiq-${envName}-documents-${this.account}`,
+      encryption: s3.BucketEncryption.S3_MANAGED, // AES-256 server-side encryption
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL, // all four public-access settings ON
+      enforceSSL: true, // deny any non-HTTPS (unencrypted-in-transit) request
+      versioned: true, // keep prior versions so an overwrite/delete is recoverable
+      removalPolicy: cdk.RemovalPolicy.RETAIN, // non-prod: keep documents if the stack is deleted
+    });
+
     // ---------------------------------------------------------------------
     // 3. Persistent data — EFS mounted at /app/data so admin edits to region
     //    JSON survive container restarts/redeploys.
@@ -134,6 +153,11 @@ export class ComplianceIqStack extends cdk.Stack {
     );
     tavilySecret.grantRead(taskRole);
 
+    // Documents bucket access: the task proxies uploads/downloads/deletes, so it
+    // needs read+write on objects (and list on the bucket). grantReadWrite covers
+    // Get/Put/Delete object + List bucket, scoped to THIS bucket only.
+    documentsBucket.grantReadWrite(taskRole);
+
     const taskDef = new ecs.FargateTaskDefinition(this, 'TaskDef', {
       cpu,
       memoryLimitMiB: memoryMiB,
@@ -171,6 +195,7 @@ export class ComplianceIqStack extends cdk.Stack {
         DATA_DIR: '/app/data', // matches the volume mount + regionLoader resolution
         BEDROCK_MODEL_ID: bedrockModelId,
         AWS_REGION: awsRegionForApp,
+        DOCUMENTS_BUCKET: documentsBucket.bucketName, // enables S3-backed document storage
       },
       secrets: {
         TAVILY_API_KEY: ecs.Secret.fromSecretsManager(tavilySecret),
@@ -232,29 +257,22 @@ export class ComplianceIqStack extends cdk.Stack {
       cognitoDomain: { domainPrefix: `complianceiq-${envName}-${this.account}` },
     });
 
-    // OAuth callback (the ALB's well-known OIDC response path).
-    //
-    // Casing note: browsers lowercase the host, but alb.loadBalancerDnsName
-    // renders mixed-case, and Cognito matches callback hosts case-sensitively.
-    // For a RE-USABLE deployment there are two correct options:
-    //   (A) RECOMMENDED: deploy behind a stable custom domain (set `appDomainName`)
-    //       — pass -c appDomainName=app.example.com. The callback is then clean
-    //       and case-stable, and you point that domain's DNS at the ALB.
-    //   (B) Fallback (no domain): use the raw ALB DNS. Because its exact lowercase
-    //       form is only known AFTER the ALB is created, deploy once, then run the
-    //       helper in infra/scripts/add-cognito-callback.sh (prints + registers the
-    //       lowercase callback). This avoids hardcoding any account-specific DNS.
-    const appDomainName = this.node.tryGetContext('appDomainName') as string | undefined;
-    const callbackUrls = appDomainName
-      ? [`https://${appDomainName}/oauth2/idpresponse`]
-      : [`https://${alb.loadBalancerDnsName}/oauth2/idpresponse`];
+    // Callback is the ALB's well-known OIDC response path. IMPORTANT: browsers
+    // lowercase the host, but alb.loadBalancerDnsName renders with mixed case,
+    // and Cognito matches callback hosts case-sensitively. Register BOTH the
+    // CloudFormation-token form AND an explicit lowercased literal so the OAuth
+    // redirect matches regardless of host casing. Update the literal if the ALB
+    // is ever replaced (its DNS name changes).
+    const albCallbackToken = `https://${alb.loadBalancerDnsName}/oauth2/idpresponse`;
+    const albCallbackLower =
+      'https://compli-alb16-6eesite0yiky-1926867226.us-east-1.elb.amazonaws.com/oauth2/idpresponse';
 
     const userPoolClient = userPool.addClient('AlbClient', {
       generateSecret: true, // required for ALB authenticate-cognito
       oAuth: {
         flows: { authorizationCodeGrant: true },
         scopes: [cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL],
-        callbackUrls,
+        callbackUrls: [albCallbackToken, albCallbackLower],
       },
       supportedIdentityProviders: [cognito.UserPoolClientIdentityProvider.COGNITO],
     });
@@ -358,6 +376,10 @@ export class ComplianceIqStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'EfsFileSystemId', {
       value: fileSystem.fileSystemId,
       description: 'EFS holding persistent /app/data',
+    });
+    new cdk.CfnOutput(this, 'DocumentsBucketName', {
+      value: documentsBucket.bucketName,
+      description: 'Private S3 bucket holding admin-uploaded regulation documents',
     });
     new cdk.CfnOutput(this, 'VpcId', { value: vpc.vpcId });
   }
