@@ -355,6 +355,8 @@ interface AdminContextType {
 
   // Feature Flags
   featureFlags: FeatureFlags;
+  // Admin-aware view for gating feature visibility (admins see all as enabled).
+  effectiveFeatureFlags: FeatureFlags;
   toggleFeature: (feature: keyof FeatureFlags, value?: boolean) => void;
   updateFeatureFlags: (newFlags: FeatureFlags) => void;
   resetFeatureFlags: () => void;
@@ -547,6 +549,14 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const isCurrentUserAdmin =
     (isAuthenticated || isAdminUnlocked) && (currentUser.isAdmin || currentUser.role === 'admin');
 
+  // Effective feature access used for GATING (what the current user can reach).
+  // Admins bypass feature toggles entirely — they always have access to every
+  // feature regardless of toggle state. Normal users are gated by the real
+  // flags. NOTE: the raw `featureFlags` below remains the true toggle state so
+  // the admin console shows/edits the actual on/off values; only this derived
+  // object is admin-aware and should be used to decide feature visibility.
+  // (declared after featureFlags via a function so it reads the latest state)
+
   // 2. Feature Flags State
   const [featureFlags, setFeatureFlags] = useState<FeatureFlags>(() => {
     try {
@@ -558,22 +568,31 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return DEFAULT_FEATURE_FLAGS;
   });
 
-  // Sync feature flags with backend on initial mount
+  // Sync feature flags from the file-backed, server-authoritative store on mount
+  // (same source refreshAdminData uses), so toggle state is consistent and shared
+  // across all admins and persists across server restarts.
   useEffect(() => {
-    fetch('/api/features')
+    fetch('/api/feature-flags')
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data?.features) {
-          setFeatureFlags((prev) => ({
-            ...prev,
-            ...data.features,
-          }));
+        if (data?.flags && typeof data.flags === 'object') {
+          setFeatureFlags((prev) => ({ ...prev, ...data.flags }));
         }
       })
       .catch((err) => {
         console.warn('[AdminContext] Could not fetch server feature flags, using local state:', err);
       });
   }, []);
+
+  // Admin-aware feature access used for GATING feature visibility. Admins get
+  // every feature forced ON (toggles never restrict an admin); normal users use
+  // the real flags. The raw `featureFlags` stays the true state for the toggle UI.
+  const effectiveFeatureFlags = useMemo<FeatureFlags>(() => {
+    if (!isCurrentUserAdmin) return featureFlags;
+    const allOn: any = {};
+    for (const k of Object.keys(featureFlags)) allOn[k] = true;
+    return allOn as FeatureFlags;
+  }, [featureFlags, isCurrentUserAdmin]);
 
   // Defensive: collapse any regulations that share the same id, keeping the
   // first occurrence. A stale localStorage cache (or bad data) with duplicate
@@ -1234,6 +1253,15 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     } catch { /* offline: keep cache */ }
 
+    // Countries / jurisdictions (server-authoritative)
+    try {
+      const r = await fetch('/api/countries');
+      if (r.ok) {
+        const d = await r.json();
+        if (Array.isArray(d) && d.length > 0) setCountriesRaw(d);
+      }
+    } catch { /* keep cache */ }
+
     // Link suggestions
     try {
       const r = await fetch('/api/link-suggestions');
@@ -1658,12 +1686,13 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         `Toggled feature ${feature} to ${nextVal ? 'ENABLED' : 'DISABLED'}.`
       );
 
-      // Async sync to backend
-      fetch('/api/features', {
-        method: 'POST',
+      // Persist to the file-backed, server-authoritative flags store so toggle
+      // state is durably shared across all admins (and survives restarts).
+      fetch('/api/feature-flags', {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ feature, enabled: nextVal }),
-      }).catch((e) => console.warn('[AdminContext] Failed to sync feature to backend:', e));
+        body: JSON.stringify({ flags: updated }),
+      }).catch((e) => console.warn('[AdminContext] Failed to sync feature flags to backend:', e));
 
       return updated;
     });
@@ -1673,12 +1702,11 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setFeatureFlags(DEFAULT_FEATURE_FLAGS);
     addAuditLog('FEATURE_TOGGLED', 'All Features', 'Reset all feature flags to system default.');
 
-    // Async sync to backend
-    fetch('/api/features', {
-      method: 'POST',
+    fetch('/api/feature-flags', {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ features: DEFAULT_FEATURE_FLAGS }),
-    }).catch((e) => console.warn('[AdminContext] Failed to reset features on backend:', e));
+      body: JSON.stringify({ flags: DEFAULT_FEATURE_FLAGS }),
+    }).catch((e) => console.warn('[AdminContext] Failed to reset feature flags on backend:', e));
   };
 
   const updateFeatureFlags = (newFlags: FeatureFlags) => {
@@ -1689,12 +1717,11 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       'Applied bulk platform feature flags update in one shot.'
     );
 
-    // Async sync to backend
-    fetch('/api/features', {
-      method: 'POST',
+    fetch('/api/feature-flags', {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ features: newFlags }),
-    }).catch((e) => console.warn('[AdminContext] Failed to sync batch features to backend:', e));
+      body: JSON.stringify({ flags: newFlags }),
+    }).catch((e) => console.warn('[AdminContext] Failed to sync batch feature flags to backend:', e));
   };
 
   // Regulation Actions
@@ -2110,15 +2137,25 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   }, [timelineEvents, pendingTimelineEdits]);
 
-  // Country & Jurisdiction Actions
+  // Country & Jurisdiction Actions — server-authoritative (file-backed), so
+  // jurisdiction MACDs sync across all admins. Optimistic local update + server
+  // write + refetch, mirroring the regulation/user pattern.
   const addCountry = (countryData: Country) => {
+    const exists = countriesRaw.some((c) => c.id.toLowerCase() === countryData.id.toLowerCase());
     setCountriesRaw((prev) => {
-      const exists = prev.some((c) => c.id.toLowerCase() === countryData.id.toLowerCase());
-      if (exists) {
-        return prev.map((c) => (c.id.toLowerCase() === countryData.id.toLowerCase() ? countryData : c));
-      }
+      if (exists) return prev.map((c) => (c.id.toLowerCase() === countryData.id.toLowerCase() ? countryData : c));
       return [countryData, ...prev];
     });
+    const req = exists
+      ? fetch(`/api/countries/${encodeURIComponent(countryData.id)}`, {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(countryData),
+        })
+      : fetch('/api/countries', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(countryData),
+        });
+    req.then((r) => (r.ok ? r.json() : r.json().then((e) => Promise.reject(e))))
+      .then(() => refreshAdminData())
+      .catch((e) => console.warn('[AdminContext] Persist country failed:', e?.error || e));
     addAuditLog(
       'COUNTRY_CREATED',
       countryData.name,
@@ -2131,6 +2168,12 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       prev.map((c) => (c.id.toLowerCase() === id.toLowerCase() ? { ...c, ...updates } : c))
     );
     const target = countriesRaw.find((c) => c.id.toLowerCase() === id.toLowerCase());
+    fetch(`/api/countries/${encodeURIComponent(id)}`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updates),
+    })
+      .then((r) => (r.ok ? r.json() : r.json().then((e) => Promise.reject(e))))
+      .then(() => refreshAdminData())
+      .catch((e) => console.warn('[AdminContext] Update country failed:', e?.error || e));
     addAuditLog(
       'COUNTRY_UPDATED',
       target?.name || id,
@@ -2141,6 +2184,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const deleteCountry = (id: string) => {
     const target = countriesRaw.find((c) => c.id.toLowerCase() === id.toLowerCase());
     setCountriesRaw((prev) => prev.filter((c) => c.id.toLowerCase() !== id.toLowerCase()));
+    fetch(`/api/countries/${encodeURIComponent(id)}`, { method: 'DELETE' })
+      .then((r) => (r.ok ? r.json() : r.json().then((e) => Promise.reject(e))))
+      .then(() => refreshAdminData())
+      .catch((e) => console.warn('[AdminContext] Delete country failed:', e?.error || e));
     addAuditLog(
       'COUNTRY_DELETED',
       target?.name || id,
@@ -2150,6 +2197,12 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const resetCountriesToDefault = () => {
     setCountriesRaw(MENAT_COUNTRIES);
+    fetch('/api/countries', {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ countries: MENAT_COUNTRIES }),
+    })
+      .then((r) => (r.ok ? r.json() : r.json().then((e) => Promise.reject(e))))
+      .then(() => refreshAdminData())
+      .catch((e) => console.warn('[AdminContext] Reset countries failed:', e?.error || e));
     addAuditLog(
       'COUNTRIES_RESET',
       'All Jurisdictions',
@@ -2282,6 +2335,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         refreshAdminData,
 
         featureFlags,
+        effectiveFeatureFlags,
         toggleFeature,
         updateFeatureFlags,
         resetFeatureFlags,

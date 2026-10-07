@@ -51,7 +51,7 @@ import { Search, Filter, Shield, Globe2, BookOpen, Layers, CheckCircle2, AlertCi
 
 export default function App() {
   const { canManageWatchlist, canTriggerScraper, triggerRestrictedAction } = useRBAC();
-  const { currentUser, isCurrentUserAdmin, isAdminUnlocked, regulations, countries, featureFlags, isAuthenticated, addAuditLog, timelineEvents, benchmarkDate } = useAdmin();
+  const { currentUser, isCurrentUserAdmin, isAdminUnlocked, regulations, countries, effectiveFeatureFlags: featureFlags, isAuthenticated, addAuditLog, timelineEvents, benchmarkDate } = useAdmin();
 
   const [activeTab, setActiveTab] = useState<NavigationTab>('overview');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');

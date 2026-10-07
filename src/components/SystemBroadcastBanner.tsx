@@ -3,7 +3,7 @@ import { useAdmin } from '../context/AdminContext';
 import { AlertTriangle, Info, AlertOctagon, X, ExternalLink, ShieldAlert } from 'lucide-react';
 
 export const SystemBroadcastBanner: React.FC = () => {
-  const { broadcastBanner, featureFlags } = useAdmin();
+  const { broadcastBanner, effectiveFeatureFlags: featureFlags } = useAdmin();
   const [isDismissed, setIsDismissed] = useState(false);
 
   // If system broadcast is disabled globally in feature flags or dismissed by user or muted in broadcast settings

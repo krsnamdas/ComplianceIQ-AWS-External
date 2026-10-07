@@ -191,6 +191,14 @@ export function saveUsers<T>(data: T[]) {
   return saveRegionJSON<T>('users.json', data);
 }
 
+// --- Countries / jurisdictions (admin-editable, server-authoritative) ---
+export function loadCountries<T>(fallback: T[]) {
+  return loadRegionJSON<T>('countries.json', fallback);
+}
+export function saveCountries<T>(data: T[]) {
+  return saveRegionJSON<T>('countries.json', data);
+}
+
 // --- Broadcast banner (single object) ---
 export function loadBroadcast<T extends object>(fallback: T) {
   return loadRegionObject<T>('broadcast.json', fallback);

@@ -15,6 +15,7 @@ data/regions/*/documents.json
 # deployment volume / EFS, never in the repo). Contains bcrypt password hashes
 # and admin-mutable data that must not be versioned.
 data/regions/*/users.json
+data/regions/*/countries.json
 data/regions/*/audit-logs.json
 data/regions/*/audit-logs/
 data/regions/*/link-suggestions.json

@@ -68,6 +68,7 @@ import {
   loadRegulationSuggestions, saveRegulationSuggestions,
   loadBroadcast, saveBroadcast,
   loadFeatureFlags, saveFeatureFlags,
+  loadCountries, saveCountries,
 } from './src/data/regionLoader.ts';
 import { appendAudit, auditToCsv, readAudit, isAuditS3Backed, AuditEntry } from './src/data/auditStore.ts';
 
@@ -601,6 +602,9 @@ async function startServer() {
   const _broadcastFallback = { active: false, message: '', severity: 'info', updatedAt: '', author: '' };
   let broadcastStore: any = loadBroadcast<any>(_broadcastFallback).data;
   let featureFlagsStore: any = loadFeatureFlags<any>(serverFeatureFlags).data;
+  // Countries: file-backed, admin-editable. Seeds from the in-code MENAT list
+  // on first run so a fresh deploy has the full jurisdiction set.
+  let countriesStore: any[] = loadCountries<any>(MENAT_COUNTRIES as any[]).data;
 
   // ===== Auth endpoints =====================================================
   // Verify credentials server-side against the bcrypt hash. The hash never
@@ -853,9 +857,61 @@ async function startServer() {
     return res.status(400).json({ error: 'Provide "features" object or "feature" string with optional "enabled" boolean.' });
   });
 
-  // API 2: Countries Directory
+  // API 2: Countries Directory (file-backed, admin-editable, server-authoritative)
   app.get('/api/countries', (req: Request, res: Response) => {
-    res.json(MENAT_COUNTRIES);
+    res.json(countriesStore);
+  });
+
+  // Create a country
+  app.post('/api/countries', (req: Request, res: Response) => {
+    const incoming = req.body || {};
+    if (!incoming.id || !incoming.name) {
+      return res.status(400).json({ error: 'id and name are required.' });
+    }
+    if (countriesStore.some((c) => String(c.id).toLowerCase() === String(incoming.id).toLowerCase())) {
+      return res.status(409).json({ error: `Country "${incoming.id}" already exists.` });
+    }
+    const snapshot = [...countriesStore];
+    countriesStore = [...countriesStore, incoming];
+    const p = saveCountries<any>(countriesStore);
+    if (!p.ok) { countriesStore = snapshot; return res.status(500).json({ error: 'Failed to persist country.', details: p.error }); }
+    return res.status(201).json({ success: true, country: incoming, total: countriesStore.length });
+  });
+
+  // Update a country
+  app.put('/api/countries/:id', (req: Request, res: Response) => {
+    const { id } = req.params;
+    const idx = countriesStore.findIndex((c) => String(c.id).toLowerCase() === id.toLowerCase());
+    if (idx === -1) return res.status(404).json({ error: `Country "${id}" not found.` });
+    const snapshot = [...countriesStore];
+    countriesStore[idx] = { ...countriesStore[idx], ...(req.body || {}), id: countriesStore[idx].id };
+    const p = saveCountries<any>(countriesStore);
+    if (!p.ok) { countriesStore = snapshot; return res.status(500).json({ error: 'Failed to persist country update.', details: p.error }); }
+    return res.json({ success: true, country: countriesStore[idx] });
+  });
+
+  // Delete a country
+  app.delete('/api/countries/:id', (req: Request, res: Response) => {
+    const { id } = req.params;
+    if (!countriesStore.some((c) => String(c.id).toLowerCase() === id.toLowerCase())) {
+      return res.status(404).json({ error: `Country "${id}" not found.` });
+    }
+    const snapshot = [...countriesStore];
+    countriesStore = countriesStore.filter((c) => String(c.id).toLowerCase() !== id.toLowerCase());
+    const p = saveCountries<any>(countriesStore);
+    if (!p.ok) { countriesStore = snapshot; return res.status(500).json({ error: 'Failed to persist deletion.', details: p.error }); }
+    return res.json({ success: true, deletedId: id, total: countriesStore.length });
+  });
+
+  // Bulk replace (used by reset-to-default / import)
+  app.put('/api/countries', (req: Request, res: Response) => {
+    const incoming = req.body?.countries;
+    if (!Array.isArray(incoming)) return res.status(400).json({ error: 'Body must include a "countries" array.' });
+    const snapshot = [...countriesStore];
+    countriesStore = incoming;
+    const p = saveCountries<any>(countriesStore);
+    if (!p.ok) { countriesStore = snapshot; return res.status(500).json({ error: 'Failed to persist countries.', details: p.error }); }
+    return res.json({ success: true, total: countriesStore.length });
   });
 
   // API 3: Regulations List with Filter Query

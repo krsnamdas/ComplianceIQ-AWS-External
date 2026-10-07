@@ -73,7 +73,7 @@ export const RegulationCard: React.FC<RegulationCardProps> = ({
   onRedlinePolicy,
 }) => {
   const { canManageWatchlist } = useRBAC();
-  const { getLinkAudit, addAuditLog, featureFlags, timelineEvents, isCurrentUserAdmin, isAuthenticated } = useAdmin();
+  const { getLinkAudit, addAuditLog, effectiveFeatureFlags: featureFlags, timelineEvents, isCurrentUserAdmin, isAuthenticated } = useAdmin();
   const [isExpanded, setIsExpanded] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
   const [showUrgencyBreakdown, setShowUrgencyBreakdown] = useState(false);

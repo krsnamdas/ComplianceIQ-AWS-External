@@ -115,7 +115,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   scraperStatus,
 }) => {
   const { canTriggerScraper, triggerRestrictedAction } = useRBAC();
-  const { featureFlags, isCurrentUserAdmin, isAuthenticated, currentUser, linkSuggestions = [] } = useAdmin();
+  const { effectiveFeatureFlags: featureFlags, isCurrentUserAdmin, isAuthenticated, currentUser, linkSuggestions = [] } = useAdmin();
   const { isLight, toggleTheme } = useTheme();
 
   // Active open dropdown in desktop menu
