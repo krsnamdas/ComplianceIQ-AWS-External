@@ -29,6 +29,7 @@ export const UserManagementTab: React.FC = () => {
     currentUser,
     switchUser,
     addUser,
+    resetUserPassword,
     updateUser,
     deleteUser,
     toggleUserStatus,
@@ -55,10 +56,22 @@ export const UserManagementTab: React.FC = () => {
   const adminCount = users.filter((u) => u.isAdmin || u.role === 'admin').length;
   const normalCount = users.length - adminCount;
 
-  const handleResetPassword = (user: UserProfile) => {
-    const pass = user.password || (user.isAdmin ? 'ciadmin123' : 'sasuser123');
-    setResetSuccessMessage(`Simple password for @${user.username || user.id}: "${pass}" (Copied to clipboard)`);
-    navigator.clipboard.writeText(pass);
+  // Real password reset: admin enters a new password, which the server stores
+  // as a fresh bcrypt hash. No password is ever revealed or copied.
+  const handleResetPassword = async (user: UserProfile) => {
+    const newPass = window.prompt(`Set a NEW password for @${user.username || user.id} (min 6 characters):`);
+    if (newPass === null) return; // cancelled
+    if (newPass.trim().length < 6) {
+      setResetSuccessMessage('Password must be at least 6 characters.');
+      setTimeout(() => setResetSuccessMessage(null), 4000);
+      return;
+    }
+    const res = await resetUserPassword(user.id, newPass.trim());
+    if (res?.success) {
+      setResetSuccessMessage(`Password for @${user.username || user.id} has been reset.`);
+    } else {
+      setResetSuccessMessage(res?.error || 'Password reset failed.');
+    }
     setTimeout(() => setResetSuccessMessage(null), 4000);
   };
 
@@ -77,8 +90,8 @@ export const UserManagementTab: React.FC = () => {
             </span>
           </h3>
           <p className="text-xs text-slate-400 mt-1 max-w-2xl">
-            Simulated IAM directory with configured simple passwords (<strong>ciadmin123</strong> for administrators, <strong>sasuser123</strong> for normal users).
-            Click <strong>"Log In As"</strong> to test any persona, or copy their credentials for direct sign-in.
+            Server-managed user directory. Passwords are stored only as bcrypt hashes and are
+            never displayed. Use <strong>Reset</strong> to set a new password for a user.
           </p>
         </div>
 
@@ -132,7 +145,7 @@ export const UserManagementTab: React.FC = () => {
             <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 font-semibold uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="py-3 px-4">User & Contact</th>
-                <th className="py-3 px-4">Username & Password</th>
+                <th className="py-3 px-4">Username</th>
                 <th className="py-3 px-4">Role & Privileges</th>
                 <th className="py-3 px-4">Organization & Jurisdiction</th>
                 <th className="py-3 px-4">Status</th>
@@ -144,7 +157,6 @@ export const UserManagementTab: React.FC = () => {
               {filteredUsers.map((user) => {
                 const isCurrent = user.id === currentUser.id;
                 const isAdmin = user.isAdmin || user.role === 'admin';
-                const pass = user.password || (isAdmin ? 'ciadmin123' : 'sasuser123');
 
                 return (
                   <tr
@@ -179,16 +191,16 @@ export const UserManagementTab: React.FC = () => {
                       </div>
                     </td>
 
-                    {/* Username & Password */}
+                    {/* Username (password is never displayed) */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <div className="flex items-center space-x-1.5">
                         <span className="font-mono font-bold text-emerald-300 bg-slate-950 px-2 py-0.5 rounded border border-slate-700 text-[11px]">
                           @{user.username || user.id}
                         </span>
                       </div>
-                      <div className="flex items-center space-x-1 text-[10px] text-amber-400/90 font-mono mt-1">
-                        <KeyRound className="w-2.5 h-2.5 text-amber-400" />
-                        <span>{pass}</span>
+                      <div className="flex items-center space-x-1 text-[10px] text-slate-500 font-mono mt-1">
+                        <KeyRound className="w-2.5 h-2.5 text-slate-500" />
+                        <span>bcrypt-hashed</span>
                       </div>
                     </td>
 
@@ -252,16 +264,7 @@ export const UserManagementTab: React.FC = () => {
                     <td className="py-3.5 px-4 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end space-x-1.5">
                         {/* Switch Account Button */}
-                        {!isCurrent ? (
-                          <button
-                            onClick={() => switchUser(user.id)}
-                            className="px-2.5 py-1 rounded bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/30 flex items-center space-x-1 transition-colors font-medium text-[11px] cursor-pointer"
-                            title={`Switch active session to ${user.name}`}
-                          >
-                            <LogIn className="w-3 h-3" />
-                            <span>Log In As</span>
-                          </button>
-                        ) : (
+                        {isCurrent && (
                           <span className="text-[11px] text-emerald-400 font-semibold px-2 py-1">
                             Current
                           </span>
@@ -392,14 +395,10 @@ export const UserManagementTab: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Simple Password</label>
-                  <input
-                    type="text"
-                    required
-                    value={editingUser.password || ''}
-                    onChange={(e) => setEditingUser({ ...editingUser, password: e.target.value })}
-                    className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:outline-none focus:border-emerald-500 font-mono"
-                  />
+                  <label className="block font-semibold text-slate-300 mb-1">Password</label>
+                  <p className="text-[11px] text-slate-500 px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800">
+                    Managed via the <strong>Reset</strong> action (stored as a bcrypt hash).
+                  </p>
                 </div>
               </div>
 
@@ -566,14 +565,16 @@ export const UserManagementTab: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1">Simple Password *</label>
+                  <label className="block font-semibold text-slate-300 mb-1">Initial Password *</label>
                   <input
                     name="password"
-                    type="text"
+                    type="password"
                     required
-                    placeholder="e.g. sasuser123"
+                    minLength={6}
+                    placeholder="Set an initial password (min 6 chars)"
                     className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-700 text-white focus:outline-none focus:border-emerald-500 font-mono"
                   />
+                  <p className="text-[10px] text-slate-500 mt-1">Stored as a bcrypt hash. The user can change it after signing in.</p>
                 </div>
               </div>
 

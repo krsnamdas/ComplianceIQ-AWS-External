@@ -59,6 +59,17 @@ import {
   loadDocuments, saveDocuments, putObject, getObject, deleteObject, localFileExists,
   isS3Backed, RegulationDocument, RegulationDocType,
 } from './src/data/documentStore.ts';
+import {
+  initUsers, listUsers, verifyLogin, createUser, updateUser as storeUpdateUser,
+  deleteUser as storeDeleteUser, resetPassword, changePassword,
+} from './src/data/userStore.ts';
+import {
+  loadLinkSuggestions, saveLinkSuggestions,
+  loadRegulationSuggestions, saveRegulationSuggestions,
+  loadBroadcast, saveBroadcast,
+  loadFeatureFlags, saveFeatureFlags,
+} from './src/data/regionLoader.ts';
+import { appendAudit, auditToCsv, readAudit, isAuditS3Backed, AuditEntry } from './src/data/auditStore.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -571,6 +582,187 @@ async function startServer() {
   const PORT = Number(process.env.PORT) || 3000;
 
   app.use(express.json());
+
+  // Initialize the server-side user roster (seeds with bcrypt-hashed passwords
+  // on first run). All auth + user MACDs are server-authoritative from here.
+  await initUsers();
+  console.log('[ComplianceIQ Auth] User roster initialized (bcrypt, server-side).');
+
+  // -------------------------------------------------------------------------
+  // Server-authoritative state loaded from region JSON files. These replace the
+  // previous localStorage-only model so every admin/device shares one source of
+  // truth (suggestions, audit logs, broadcast, feature flags).
+  // -------------------------------------------------------------------------
+  let linkSuggestionsStore: any[] = loadLinkSuggestions<any>([]).data;
+  let regulationSuggestionsStore: any[] = loadRegulationSuggestions<any>([]).data;
+  console.log(
+    `[ComplianceIQ Audit] Audit log backend = ${isAuditS3Backed() ? 'object store (encrypted at rest)' : 'local file (no object store configured)'}.`
+  );
+  const _broadcastFallback = { active: false, message: '', severity: 'info', updatedAt: '', author: '' };
+  let broadcastStore: any = loadBroadcast<any>(_broadcastFallback).data;
+  let featureFlagsStore: any = loadFeatureFlags<any>(serverFeatureFlags).data;
+
+  // ===== Auth endpoints =====================================================
+  // Verify credentials server-side against the bcrypt hash. The hash never
+  // leaves the server; on success we return the public user profile.
+  app.post('/api/auth/login', async (req: Request, res: Response) => {
+    const { username, password } = req.body || {};
+    if (!username || !password) {
+      return res.status(400).json({ error: 'username and password are required.' });
+    }
+    try {
+      const user = await verifyLogin(String(username), String(password));
+      if (!user) return res.status(401).json({ error: 'Invalid username or password.' });
+      return res.json({ success: true, user });
+    } catch (err: any) {
+      return res.status(500).json({ error: 'Login failed.', details: err?.message });
+    }
+  });
+
+  // Self-service password change (verifies current password first).
+  app.post('/api/auth/change-password', async (req: Request, res: Response) => {
+    const { userId, currentPassword, newPassword } = req.body || {};
+    if (!userId || !currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'userId, currentPassword, and newPassword are required.' });
+    }
+    const result = await changePassword(String(userId), String(currentPassword), String(newPassword));
+    if (!result.ok) return res.status(400).json({ error: result.error });
+    return res.json({ success: true });
+  });
+
+  // ===== User management (admin) ============================================
+  app.get('/api/users', (req: Request, res: Response) => {
+    res.json({ total: listUsers().length, users: listUsers() });
+  });
+
+  app.post('/api/users', async (req: Request, res: Response) => {
+    const result = await createUser(req.body || {});
+    if (!result.ok) return res.status(400).json({ error: result.error });
+    return res.status(201).json({ success: true, user: result.user });
+  });
+
+  app.put('/api/users/:id', (req: Request, res: Response) => {
+    // Never allow password/hash fields through this path.
+    const { password, passwordHash, id, ...updates } = req.body || {};
+    const result = storeUpdateUser(req.params.id, updates);
+    if (!result.ok) return res.status(result.error === 'User not found.' ? 404 : 400).json({ error: result.error });
+    return res.json({ success: true, user: result.user });
+  });
+
+  app.delete('/api/users/:id', (req: Request, res: Response) => {
+    const result = storeDeleteUser(req.params.id);
+    if (!result.ok) return res.status(404).json({ error: result.error });
+    return res.json({ success: true, deletedId: req.params.id });
+  });
+
+  // Admin reset of another user's password (sets a new bcrypt hash).
+  app.post('/api/users/:id/reset-password', async (req: Request, res: Response) => {
+    const { newPassword } = req.body || {};
+    const result = await resetPassword(req.params.id, String(newPassword || ''));
+    if (!result.ok) return res.status(400).json({ error: result.error });
+    return res.json({ success: true });
+  });
+
+  // ===== Link suggestions ===================================================
+  app.get('/api/link-suggestions', (req: Request, res: Response) => {
+    res.json({ total: linkSuggestionsStore.length, suggestions: linkSuggestionsStore });
+  });
+  app.put('/api/link-suggestions', (req: Request, res: Response) => {
+    const incoming = req.body?.suggestions;
+    if (!Array.isArray(incoming)) return res.status(400).json({ error: 'Body must include a "suggestions" array.' });
+    const snapshot = linkSuggestionsStore;
+    linkSuggestionsStore = incoming;
+    const p = saveLinkSuggestions<any>(linkSuggestionsStore);
+    if (!p.ok) { linkSuggestionsStore = snapshot; return res.status(500).json({ error: 'Failed to persist.', details: p.error }); }
+    res.json({ success: true, total: linkSuggestionsStore.length });
+  });
+
+  // ===== Regulation field-correction suggestions ============================
+  app.get('/api/regulation-suggestions', (req: Request, res: Response) => {
+    res.json({ total: regulationSuggestionsStore.length, suggestions: regulationSuggestionsStore });
+  });
+  app.put('/api/regulation-suggestions', (req: Request, res: Response) => {
+    const incoming = req.body?.suggestions;
+    if (!Array.isArray(incoming)) return res.status(400).json({ error: 'Body must include a "suggestions" array.' });
+    const snapshot = regulationSuggestionsStore;
+    regulationSuggestionsStore = incoming;
+    const p = saveRegulationSuggestions<any>(regulationSuggestionsStore);
+    if (!p.ok) { regulationSuggestionsStore = snapshot; return res.status(500).json({ error: 'Failed to persist.', details: p.error }); }
+    res.json({ success: true, total: regulationSuggestionsStore.length });
+  });
+
+  // ===== Audit logs (persisted to encrypted object storage) =================
+  // Events are appended to a single JSONL file in the bucket (encrypted at rest
+  // by SSE). The admin panel downloads a readable CSV; nothing is kept client-side.
+  app.post('/api/audit-logs', async (req: Request, res: Response) => {
+    const entries: AuditEntry[] = Array.isArray(req.body?.entries)
+      ? req.body.entries
+      : (req.body ? [req.body] : []);
+    if (entries.length === 0) {
+      return res.status(400).json({ error: 'Provide an entry or "entries" array.' });
+    }
+    try {
+      for (const e of entries) await appendAudit(e);
+      res.status(201).json({ success: true, recorded: entries.length });
+    } catch (err: any) {
+      // Audit writes are best-effort; report but do not throw the caller's flow.
+      console.warn('[Audit] append failed:', err?.message || err);
+      res.status(500).json({ error: 'Failed to record audit entry.', details: err?.message });
+    }
+  });
+
+  // Return the complete shared audit trail as JSON (newest first) so the admin
+  // panel can display ALL admins' actions on screen, not just the local browser's.
+  app.get('/api/audit-logs', async (req: Request, res: Response) => {
+    try {
+      const entries = await readAudit();
+      res.json({ total: entries.length, logs: entries });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Failed to read audit log.', details: err?.message });
+    }
+  });
+
+  // Download the full audit trail as a readable CSV (admin action; UI-gated).
+  app.get('/api/audit-logs/download', async (req: Request, res: Response) => {
+    try {
+      const csv = await auditToCsv();
+      const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader('Content-Disposition', `attachment; filename="ComplianceIQ_Audit_Log_${stamp}.csv"`);
+      res.send(csv);
+    } catch (err: any) {
+      console.error('[Audit] download failed:', err?.message || err);
+      res.status(500).json({ error: 'Failed to generate audit log download.', details: err?.message });
+    }
+  });
+
+  // ===== Broadcast banner (shared) ==========================================
+  app.get('/api/broadcast', (req: Request, res: Response) => {
+    res.json(broadcastStore);
+  });
+  app.put('/api/broadcast', (req: Request, res: Response) => {
+    const snapshot = broadcastStore;
+    broadcastStore = { ...broadcastStore, ...(req.body || {}) };
+    const p = saveBroadcast<any>(broadcastStore);
+    if (!p.ok) { broadcastStore = snapshot; return res.status(500).json({ error: 'Failed to persist.', details: p.error }); }
+    res.json({ success: true, broadcast: broadcastStore });
+  });
+
+  // ===== Feature flags (shared, server-authoritative) =======================
+  // Note: a separate legacy /api/features exists; this one is the file-backed
+  // store the client reconciles against so flags are shared across admins.
+  app.get('/api/feature-flags', (req: Request, res: Response) => {
+    res.json({ flags: featureFlagsStore });
+  });
+  app.put('/api/feature-flags', (req: Request, res: Response) => {
+    const incoming = req.body?.flags;
+    if (!incoming || typeof incoming !== 'object') return res.status(400).json({ error: 'Body must include a "flags" object.' });
+    const snapshot = featureFlagsStore;
+    featureFlagsStore = { ...featureFlagsStore, ...incoming };
+    const p = saveFeatureFlags<any>(featureFlagsStore);
+    if (!p.ok) { featureFlagsStore = snapshot; return res.status(500).json({ error: 'Failed to persist.', details: p.error }); }
+    res.json({ success: true, flags: featureFlagsStore });
+  });
 
   // API 1: Health Check & Platform Info
   app.get('/api/health', (req: Request, res: Response) => {

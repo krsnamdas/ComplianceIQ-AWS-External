@@ -10,3 +10,14 @@ bun.lock
 # In AWS these live in the private S3 bucket, never in the repo.
 data/regions/*/documents/
 data/regions/*/documents.json
+
+# Runtime, server-authoritative state (seeded on first run; lives on the
+# deployment volume / EFS, never in the repo). Contains bcrypt password hashes
+# and admin-mutable data that must not be versioned.
+data/regions/*/users.json
+data/regions/*/audit-logs.json
+data/regions/*/audit-logs/
+data/regions/*/link-suggestions.json
+data/regions/*/regulation-suggestions.json
+data/regions/*/broadcast.json
+data/regions/*/feature-flags.json

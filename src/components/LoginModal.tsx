@@ -27,7 +27,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   onLoginSuccess,
   targetModuleName,
 }) => {
-  const { loginWithCredentials, quickLoginAs, users } = useAdmin();
+  const { loginWithCredentials } = useAdmin();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -35,27 +35,19 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      const res = loginWithCredentials(username, password);
-      setIsSubmitting(false);
-      if (res.success) {
-        onClose();
-        if (onLoginSuccess) onLoginSuccess();
-      } else {
-        setErrorMessage(res.message || 'Invalid username or password.');
-      }
-    }, 250);
-  };
-
-  const handleQuickPersona = (userId: string) => {
-    quickLoginAs(userId);
-    onClose();
-    if (onLoginSuccess) onLoginSuccess();
+    const res = await loginWithCredentials(username, password);
+    setIsSubmitting(false);
+    if (res.success) {
+      onClose();
+      if (onLoginSuccess) onLoginSuccess();
+    } else {
+      setErrorMessage(res.message || 'Invalid username or password.');
+    }
   };
 
   return (
@@ -112,7 +104,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 <input
                   type="text"
                   required
-                  placeholder="e.g., sasuser1 or ciadmin1"
+                  placeholder="Enter your username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="w-full pl-10 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
@@ -149,89 +141,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             </button>
           </form>
 
-          {/* Quick-Access Demo Personas */}
-          <div className="pt-4 border-t border-slate-800 space-y-2.5">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-mono">
-                1-Click Quick Demo Sign In
-              </span>
-              <span className="text-[10px] text-emerald-400 font-medium">Pre-Configured</span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left">
-              <button
-                type="button"
-                onClick={() => handleQuickPersona('sasuser1')}
-                className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/50 text-left transition-all group cursor-pointer"
-              >
-                <div className="flex items-center space-x-2">
-                  <span className="text-base">👔</span>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs font-bold text-white group-hover:text-emerald-400 truncate">
-                      sasuser1
-                    </div>
-                    <div className="text-[10px] text-slate-400 truncate">
-                      Senior Compliance Officer
-                    </div>
-                  </div>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickPersona('sasuser2')}
-                className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/50 text-left transition-all group cursor-pointer"
-              >
-                <div className="flex items-center space-x-2">
-                  <span className="text-base">🛡️</span>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs font-bold text-white group-hover:text-emerald-400 truncate">
-                      sasuser2
-                    </div>
-                    <div className="text-[10px] text-slate-400 truncate">
-                      Cyber Risk &amp; Cloud Analyst
-                    </div>
-                  </div>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickPersona('sasuser4')}
-                className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/50 text-left transition-all group cursor-pointer"
-              >
-                <div className="flex items-center space-x-2">
-                  <span className="text-base">⚖️</span>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs font-bold text-white group-hover:text-emerald-400 truncate">
-                      sasuser4
-                    </div>
-                    <div className="text-[10px] text-slate-400 truncate">
-                      Lead IT Assurance Auditor
-                    </div>
-                  </div>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickPersona('ciadmin1')}
-                className="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 hover:border-amber-500/50 hover:bg-slate-800/50 text-left transition-all group cursor-pointer"
-              >
-                <div className="flex items-center space-x-2">
-                  <span className="text-base">⚡</span>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs font-bold text-amber-300 group-hover:text-amber-400 truncate">
-                      ciadmin1
-                    </div>
-                    <div className="text-[10px] text-slate-400 truncate">
-                      System Administrator
-                    </div>
-                  </div>
-                </div>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useAdmin } from '../../context/AdminContext';
 import {
   FileSpreadsheet,
@@ -25,31 +25,58 @@ export const AuditTrailTab: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [actionFilter, setActionFilter] = useState<string>('all');
 
+  // The SHARED, server-side audit log (all admins' actions). Fetched on open so
+  // the table reflects everyone's activity — not just this browser's local log.
+  const [serverLogs, setServerLogs] = useState<any[] | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const fetchServerLogs = async () => {
+    setIsRefreshing(true);
+    try {
+      const res = await fetch('/api/audit-logs');
+      if (res.ok) {
+        const d = await res.json();
+        if (Array.isArray(d.logs)) setServerLogs(d.logs);
+      }
+    } catch {
+      // offline: fall back to local logs
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchServerLogs();
+  }, []);
+
+  // Prefer the shared server log when available; fall back to the local view.
+  const sourceLogs = serverLogs && serverLogs.length > 0 ? serverLogs : auditLogs;
+
   // Activity counts by category
   const stats = useMemo(() => {
-    const downloads = auditLogs.filter((l) => l.actionType === 'REGULATORY_DOWNLOAD').length;
-    const redlines = auditLogs.filter((l) => l.actionType === 'POLICY_REDLINING').length;
-    const scrapers = auditLogs.filter((l) => l.actionType === 'SCRAPER_TRIGGERED' || l.actionType === 'LINK_AUDIT_TRIGGERED').length;
-    const adminOps = auditLogs.filter((l) =>
+    const downloads = sourceLogs.filter((l) => l.actionType === 'REGULATORY_DOWNLOAD').length;
+    const redlines = sourceLogs.filter((l) => l.actionType === 'POLICY_REDLINING').length;
+    const scrapers = sourceLogs.filter((l) => l.actionType === 'SCRAPER_TRIGGERED' || l.actionType === 'LINK_AUDIT_TRIGGERED').length;
+    const adminOps = sourceLogs.filter((l) =>
       ['FEATURE_TOGGLED', 'USER_CREATED', 'USER_UPDATED', 'USER_STATUS_CHANGED', 'USER_SWITCHED', 'BROADCAST_UPDATED', 'BACKUP_EXPORTED', 'BACKUP_RESTORED'].includes(l.actionType)
     ).length;
     return {
-      total: auditLogs.length,
+      total: sourceLogs.length,
       downloads,
       redlines,
       scrapers,
       adminOps,
     };
-  }, [auditLogs]);
+  }, [sourceLogs]);
 
   const filteredLogs = useMemo(() => {
-    return auditLogs.filter((log) => {
+    return sourceLogs.filter((log) => {
       const matchSearch =
         searchTerm === '' ||
-        log.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.userEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.targetEntity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        log.details.toLowerCase().includes(searchTerm.toLowerCase());
+        (log.userName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (log.userEmail || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (log.targetEntity || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (log.details || '').toLowerCase().includes(searchTerm.toLowerCase());
 
       let matchAction = true;
       if (actionFilter === 'all') {
@@ -68,7 +95,7 @@ export const AuditTrailTab: React.FC = () => {
 
       return matchSearch && matchAction;
     });
-  }, [auditLogs, searchTerm, actionFilter]);
+  }, [sourceLogs, searchTerm, actionFilter]);
 
   const getActionBadge = (type: string) => {
     if (type === 'REGULATORY_DOWNLOAD') {
@@ -145,12 +172,33 @@ export const AuditTrailTab: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-2 shrink-0">
-          <button
-            onClick={exportAuditLogsCSV}
+          {/* Download the complete, server-captured audit log (stored encrypted
+              at rest in the bucket) as a readable CSV. This is the authoritative
+              trail shared across all admins — not just this browser's view. */}
+          <a
+            href="/api/audit-logs/download"
             className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center space-x-1.5 transition-colors shadow-sm cursor-pointer"
+            title="Download the full server-side audit log (CSV)"
           >
             <FileSpreadsheet className="w-4 h-4" />
-            <span>Export CSV Report</span>
+            <span>Download Audit Log (CSV)</span>
+          </a>
+          <button
+            onClick={fetchServerLogs}
+            disabled={isRefreshing}
+            className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center space-x-1.5 transition-colors cursor-pointer disabled:opacity-50"
+            title="Refresh the shared audit log from the server"
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span>Refresh</span>
+          </button>
+          <button
+            onClick={exportAuditLogsCSV}
+            className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center space-x-1.5 transition-colors cursor-pointer"
+            title="Export the entries currently visible in this view"
+          >
+            <Download className="w-4 h-4" />
+            <span>Export View</span>
           </button>
 
           <button

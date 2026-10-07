@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useRef } from 'react';
 import { Regulation, Country, TimelineEvent, RegulatoryUpdate } from '../types/regulatory';
 import { MENAT_REGULATIONS, MENAT_COUNTRIES, MOCK_REGULATORY_UPDATES } from '../data/menatData';
 import { REGULATORY_TIMELINE_EVENTS } from '../data/regulatoryTimelineData';
@@ -344,11 +344,14 @@ interface AdminContextType {
   currentUser: UserProfile;
   isCurrentUserAdmin: boolean;
   switchUser: (userId: string) => void;
-  loginWithCredentials: (username: string, password: string) => { success: boolean; message?: string; user?: UserProfile };
+  loginWithCredentials: (username: string, password: string) => Promise<{ success: boolean; message?: string; user?: UserProfile }>;
   addUser: (user: Omit<UserProfile, 'id' | 'dateCreated' | 'lastActive'>) => void;
   updateUser: (userId: string, updates: Partial<UserProfile>) => void;
   deleteUser: (userId: string) => void;
   toggleUserStatus: (userId: string) => void;
+  resetUserPassword: (userId: string, newPassword: string) => Promise<{ success?: boolean; error?: string }>;
+  changeOwnPassword: (currentPassword: string, newPassword: string) => Promise<{ success?: boolean; error?: string }>;
+  refreshAdminData: () => Promise<void>;
 
   // Feature Flags
   featureFlags: FeatureFlags;
@@ -1214,6 +1217,112 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return linkAudits[`${regulationId}:${field}`];
   };
 
+  // ---------------------------------------------------------------------------
+  // Server-authoritative sync (Track A).
+  // Users, suggestions, broadcast, and feature flags are owned by the server
+  // (region JSON files). We fetch them on load and expose refreshAdminData()
+  // for the admin "Refresh" button and refetch-on-open. localStorage remains
+  // only an offline display cache that these fetches overwrite.
+  // ---------------------------------------------------------------------------
+  const refreshAdminData = React.useCallback(async () => {
+    // Users roster (never includes password hashes)
+    try {
+      const r = await fetch('/api/users');
+      if (r.ok) {
+        const d = await r.json();
+        if (Array.isArray(d.users) && d.users.length > 0) setUsers(d.users);
+      }
+    } catch { /* offline: keep cache */ }
+
+    // Link suggestions
+    try {
+      const r = await fetch('/api/link-suggestions');
+      if (r.ok) {
+        const d = await r.json();
+        if (Array.isArray(d.suggestions)) setLinkSuggestions(d.suggestions);
+      }
+    } catch { /* keep cache */ }
+
+    // Regulation field-correction suggestions
+    try {
+      const r = await fetch('/api/regulation-suggestions');
+      if (r.ok) {
+        const d = await r.json();
+        if (Array.isArray(d.suggestions)) setRegulationSuggestions(d.suggestions);
+      }
+    } catch { /* keep cache */ }
+
+    // Broadcast banner
+    try {
+      const r = await fetch('/api/broadcast');
+      if (r.ok) {
+        const d = await r.json();
+        if (d && typeof d === 'object') setBroadcastBanner((prev) => ({ ...prev, ...d }));
+      }
+    } catch { /* keep cache */ }
+
+    // Feature flags (server-authoritative)
+    try {
+      const r = await fetch('/api/feature-flags');
+      if (r.ok) {
+        const d = await r.json();
+        if (d.flags && typeof d.flags === 'object') {
+          setFeatureFlags((prev) => ({ ...prev, ...d.flags }));
+        }
+      }
+    } catch { /* keep cache */ }
+  }, []);
+
+  // Fetch server-authoritative data once on mount.
+  const _didInitialServerFetch = useRef(false);
+  useEffect(() => {
+    refreshAdminData().finally(() => {
+      // Mark initial fetch done so the persistence effects below don't echo the
+      // just-fetched data straight back to the server on first render.
+      _didInitialServerFetch.current = true;
+    });
+  }, [refreshAdminData]);
+
+  // Persist suggestion arrays to the server whenever they change locally
+  // (accept / reject / submit). Skipped until the initial fetch completes so we
+  // never echo server data back. Whole-array replace keeps all admins in sync.
+  useEffect(() => {
+    if (!_didInitialServerFetch.current) return;
+    fetch('/api/link-suggestions', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ suggestions: linkSuggestions }),
+    }).catch(() => {});
+  }, [linkSuggestions]);
+
+  useEffect(() => {
+    if (!_didInitialServerFetch.current) return;
+    fetch('/api/regulation-suggestions', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ suggestions: regulationSuggestions }),
+    }).catch(() => {});
+  }, [regulationSuggestions]);
+
+  // Persist broadcast + feature flags to the server when they change locally.
+  useEffect(() => {
+    if (!_didInitialServerFetch.current) return;
+    fetch('/api/broadcast', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(broadcastBanner),
+    }).catch(() => {});
+  }, [broadcastBanner]);
+
+  useEffect(() => {
+    if (!_didInitialServerFetch.current) return;
+    fetch('/api/feature-flags', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ flags: featureFlags }),
+    }).catch(() => {});
+  }, [featureFlags]);
+
   // Persistence Effects
   useEffect(() => {
     try {
@@ -1288,7 +1397,18 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       targetEntity,
       details,
     };
-    setAuditLogs((prev) => [newEntry, ...prev.slice(0, 199)]); // Keep last 200 entries
+    setAuditLogs((prev) => [newEntry, ...prev.slice(0, 199)]); // local view cache (last 200)
+    // Also record to the encrypted server-side audit log (fire-and-forget: the
+    // user's action must never be blocked or broken by audit persistence).
+    try {
+      fetch('/api/audit-logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newEntry),
+      }).catch(() => {});
+    } catch {
+      // ignore
+    }
   };
 
   // User Actions
@@ -1308,62 +1428,38 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const loginWithCredentials = (usernameInput: string, passwordInput: string): { success: boolean; message?: string; user?: UserProfile } => {
-    const cleanUser = usernameInput.trim().toLowerCase();
+  // Login now verifies credentials SERVER-SIDE against the bcrypt hash via
+  // POST /api/auth/login. The password hash never reaches the browser. On
+  // success the server returns the public user profile, which we adopt into
+  // local session state (and cache the roster for display).
+  const loginWithCredentials = async (
+    usernameInput: string,
+    passwordInput: string
+  ): Promise<{ success: boolean; message?: string; user?: UserProfile }> => {
+    const cleanUser = usernameInput.trim();
     const cleanPass = passwordInput.trim();
-    const target = users.find(
-      (u) =>
-        u.username.toLowerCase() === cleanUser ||
-        u.id.toLowerCase() === cleanUser ||
-        u.name.toLowerCase() === cleanUser ||
-        u.email.toLowerCase() === cleanUser
-    );
-    if (!target) {
-      return { success: false, message: `Account "${usernameInput}" not found. Available accounts: ciadmin1, ciadmin2, sasuser1, sasuser2, sasuser3, sasuser4.` };
+    if (!cleanUser || !cleanPass) {
+      return { success: false, message: 'Enter a username and password.' };
     }
-    if (target.status !== 'active') {
-      return { success: false, message: `Account "${target.username}" is suspended.` };
-    }
-
-    const validPasswords = [
-      target.password,
-      target.isAdmin ? 'cisadmin123' : 'sasuser123',
-      target.isAdmin ? 'ciadmin123' : 'sasuser123',
-    ].filter(Boolean) as string[];
-
-    if (!validPasswords.includes(cleanPass)) {
-      return { success: false, message: 'Invalid username or password.' };
-    }
-    setCurrentUserId(target.id);
-    setIsAuthenticated(true);
     try {
-      localStorage.setItem(STORAGE_KEYS.AUTH_STATE, 'true');
-      localStorage.setItem(STORAGE_KEYS.CURRENT_USER_ID, target.id);
-    } catch {
-      // ignore
-    }
-    if (target.isAdmin || target.role === 'admin') {
-      setIsAdminUnlocked(true);
-      try {
-        sessionStorage.setItem(STORAGE_KEYS.ADMIN_UNLOCKED, 'true');
-      } catch {
-        // ignore
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: cleanUser, password: cleanPass }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        return { success: false, message: data.error || 'Invalid username or password.' };
       }
-    } else {
-      setIsAdminUnlocked(false);
-      try {
-        sessionStorage.removeItem(STORAGE_KEYS.ADMIN_UNLOCKED);
-      } catch {
-        // ignore
-      }
-    }
-    addAuditLog('USER_SWITCHED', target.name, `User ${target.username} logged in with credentials.`);
-    return { success: true, user: target };
-  };
+      const data = await res.json();
+      const target = data.user as UserProfile;
 
-  const quickLoginAs = (userId: string) => {
-    const target = users.find((u) => u.id === userId);
-    if (target) {
+      // Make sure the authenticated user is present in the local roster cache.
+      setUsers((prev) => {
+        const exists = prev.some((u) => u.id === target.id);
+        return exists ? prev.map((u) => (u.id === target.id ? { ...u, ...target } : u)) : [...prev, target];
+      });
+
       setCurrentUserId(target.id);
       setIsAuthenticated(true);
       try {
@@ -1372,23 +1468,25 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       } catch {
         // ignore
       }
-      if (target.isAdmin || target.role === 'admin') {
-        setIsAdminUnlocked(true);
-        try {
-          sessionStorage.setItem(STORAGE_KEYS.ADMIN_UNLOCKED, 'true');
-        } catch {
-          // ignore
-        }
-      } else {
-        setIsAdminUnlocked(false);
-        try {
-          sessionStorage.removeItem(STORAGE_KEYS.ADMIN_UNLOCKED);
-        } catch {
-          // ignore
-        }
+      // NOTE: logging in as an admin does NOT auto-unlock the admin console.
+      // The separate admin-console password gate is intentionally retained.
+      setIsAdminUnlocked(false);
+      try {
+        sessionStorage.removeItem(STORAGE_KEYS.ADMIN_UNLOCKED);
+      } catch {
+        // ignore
       }
-      addAuditLog('USER_SWITCHED', target.name, `Quick persona login as ${target.name}.`);
+      addAuditLog('USER_SWITCHED', target.name, `User ${target.username} logged in with credentials.`);
+      return { success: true, user: target };
+    } catch (err: any) {
+      return { success: false, message: 'Login service unavailable. Please try again.' };
     }
+  };
+
+  // Quick persona login removed: switching accounts now requires an explicit
+  // logout + login. Kept as a no-op to satisfy any remaining references.
+  const quickLoginAs = (_userId: string) => {
+    console.warn('[Auth] quickLoginAs is disabled. Log out and log in with credentials to switch accounts.');
   };
 
   const logout = () => {
@@ -1405,12 +1503,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const unlockAdmin = (password: string): boolean => {
     const clean = password.trim();
-    if (
-      clean === 'cisadmin123' ||
-      clean === 'ciadmin123' ||
-      clean === 'admin123' ||
-      (currentUser.isAdmin && clean === currentUser.password)
-    ) {
+    // Second admin-console gate (intentionally retained). Shared admin console
+    // password. (A future Cognito-group check would replace this.)
+    if (clean === 'ciadmin123') {
       setIsAdminUnlocked(true);
       // Unlocking the admin console with a valid password is an authenticated
       // action. Mark the session authenticated so `isCurrentUserAdmin`
@@ -1439,8 +1534,10 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
+  // Create a user SERVER-SIDE so the password is bcrypt-hashed and the roster
+  // syncs across admins. The plaintext password is sent once over HTTPS and is
+  // never stored client-side. On success we refetch the roster from the server.
   const addUser = (userData: Omit<UserProfile, 'id' | 'dateCreated' | 'lastActive'>) => {
-    const newId = `usr_${Date.now()}_${Math.random().toString(36).substring(2, 5)}`;
     const initials = userData.name
       .split(' ')
       .map((w) => w[0])
@@ -1448,33 +1545,56 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       .substring(0, 2)
       .toUpperCase();
 
-    const newUser: UserProfile = {
-      ...userData,
-      id: newId,
-      username: userData.username || newId,
-      password: userData.password || (userData.isAdmin ? 'ciadmin123' : 'sasuser123'),
+    const payload: any = {
+      username: userData.username || userData.email,
+      name: userData.name,
+      email: userData.email,
+      role: userData.role,
+      roleLabel: userData.roleLabel,
+      isAdmin: userData.isAdmin,
       avatarInitials: initials || 'UR',
+      jobTitle: userData.jobTitle,
+      organization: userData.organization,
+      jurisdiction: userData.jurisdiction,
+      countryFlag: userData.countryFlag,
+      status: userData.status || 'active',
       dateCreated: new Date().toISOString().split('T')[0],
-      lastActive: 'Never',
+      permissions: userData.permissions,
+      // plaintext password -> server hashes with bcrypt, then discards it
+      password: (userData as any).password || (userData.isAdmin ? 'ciadmin123' : 'sasuser123'),
     };
 
-    setUsers((prev) => [...prev, newUser]);
-    addAuditLog('USER_CREATED', newUser.name, `Created user account: ${newUser.email} with role ${newUser.role}.`);
+    fetch('/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then((r) => (r.ok ? r.json() : r.json().then((e) => Promise.reject(e))))
+      .then(() => refreshAdminData())
+      .catch((e) => console.warn('[AdminContext] Create user failed:', e?.error || e));
+
+    addAuditLog('USER_CREATED', userData.name, `Created user account: ${userData.email} with role ${userData.role}.`);
   };
 
+  // Update non-secret user fields SERVER-SIDE (the server never accepts a
+  // password through this path), then refetch the roster so all admins sync.
   const updateUser = (userId: string, updates: Partial<UserProfile>) => {
-    setUsers((prev) =>
-      prev.map((u) => {
-        if (u.id === userId) {
-          const updated = { ...u, ...updates };
-          if (updates.role) {
-            updated.isAdmin = updates.role === 'admin';
-          }
-          return updated;
-        }
-        return u;
-      })
-    );
+    const safeUpdates: any = { ...updates };
+    delete safeUpdates.password; // never send password via update
+    if (safeUpdates.role) safeUpdates.isAdmin = safeUpdates.role === 'admin';
+
+    // optimistic local update for snappy UI
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, ...safeUpdates } : u)));
+
+    fetch(`/api/users/${encodeURIComponent(userId)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(safeUpdates),
+    })
+      .then((r) => (r.ok ? r.json() : r.json().then((e) => Promise.reject(e))))
+      .then(() => refreshAdminData())
+      .catch((e) => console.warn('[AdminContext] Update user failed:', e?.error || e));
+
     const target = users.find((u) => u.id === userId);
     addAuditLog('USER_UPDATED', target ? target.name : userId, `Updated user attributes: ${Object.keys(updates).join(', ')}.`);
   };
@@ -1487,20 +1607,44 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return;
     }
     setUsers((prev) => prev.filter((u) => u.id !== userId));
+    fetch(`/api/users/${encodeURIComponent(userId)}`, { method: 'DELETE' })
+      .then((r) => (r.ok ? r.json() : r.json().then((e) => Promise.reject(e))))
+      .then(() => refreshAdminData())
+      .catch((e) => console.warn('[AdminContext] Delete user failed:', e?.error || e));
     addAuditLog('USER_STATUS_CHANGED', target.name, `Deleted user account: ${target.email}.`);
   };
 
   const toggleUserStatus = (userId: string) => {
-    setUsers((prev) =>
-      prev.map((u) => {
-        if (u.id === userId) {
-          const nextStatus = u.status === 'active' ? 'suspended' : 'active';
-          addAuditLog('USER_STATUS_CHANGED', u.name, `Changed user status to ${nextStatus}.`);
-          return { ...u, status: nextStatus };
-        }
-        return u;
-      })
-    );
+    const target = users.find((u) => u.id === userId);
+    const nextStatus = target?.status === 'active' ? 'suspended' : 'active';
+    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, status: nextStatus } : u)));
+    fetch(`/api/users/${encodeURIComponent(userId)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: nextStatus }),
+    })
+      .then((r) => (r.ok ? r.json() : r.json().then((e) => Promise.reject(e))))
+      .then(() => refreshAdminData())
+      .catch((e) => console.warn('[AdminContext] Toggle status failed:', e?.error || e));
+    if (target) addAuditLog('USER_STATUS_CHANGED', target.name, `Changed user status to ${nextStatus}.`);
+  };
+
+  // Admin resets a user's password (server sets a new bcrypt hash).
+  const resetUserPassword = (userId: string, newPassword: string) => {
+    return fetch(`/api/users/${encodeURIComponent(userId)}/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ newPassword }),
+    }).then((r) => r.json());
+  };
+
+  // A user changes their own password (server verifies current, sets new hash).
+  const changeOwnPassword = (currentPassword: string, newPassword: string) => {
+    return fetch('/api/auth/change-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: currentUser.id, currentPassword, newPassword }),
+    }).then((r) => r.json());
   };
 
   // Feature Flag Actions
@@ -2133,6 +2277,9 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         updateUser,
         deleteUser,
         toggleUserStatus,
+        resetUserPassword,
+        changeOwnPassword,
+        refreshAdminData,
 
         featureFlags,
         toggleFeature,

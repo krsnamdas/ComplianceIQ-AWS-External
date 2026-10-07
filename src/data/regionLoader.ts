@@ -159,6 +159,54 @@ export function saveRoadmapMilestones<T>(data: T[]) {
   return saveRegionJSON<T>('roadmap-milestones.json', data);
 }
 
+// --- Link suggestions (user-submitted working-link proposals) ---
+export function loadLinkSuggestions<T>(fallback: T[]) {
+  return loadRegionJSON<T>('link-suggestions.json', fallback);
+}
+export function saveLinkSuggestions<T>(data: T[]) {
+  return saveRegionJSON<T>('link-suggestions.json', data);
+}
+
+// --- Regulation field-correction suggestions ---
+export function loadRegulationSuggestions<T>(fallback: T[]) {
+  return loadRegionJSON<T>('regulation-suggestions.json', fallback);
+}
+export function saveRegulationSuggestions<T>(data: T[]) {
+  return saveRegionJSON<T>('regulation-suggestions.json', data);
+}
+
+// --- Audit logs (shared, server-authoritative activity trail) ---
+export function loadAuditLogs<T>(fallback: T[]) {
+  return loadRegionJSON<T>('audit-logs.json', fallback);
+}
+export function saveAuditLogs<T>(data: T[]) {
+  return saveRegionJSON<T>('audit-logs.json', data);
+}
+
+// --- User roster (non-secret fields + bcrypt password hash) ---
+export function loadUsers<T>(fallback: T[]) {
+  return loadRegionJSON<T>('users.json', fallback);
+}
+export function saveUsers<T>(data: T[]) {
+  return saveRegionJSON<T>('users.json', data);
+}
+
+// --- Broadcast banner (single object) ---
+export function loadBroadcast<T extends object>(fallback: T) {
+  return loadRegionObject<T>('broadcast.json', fallback);
+}
+export function saveBroadcast<T extends object>(data: T) {
+  return saveRegionObject<T>('broadcast.json', data);
+}
+
+// --- Feature flags (single object) ---
+export function loadFeatureFlags<T extends object>(fallback: T) {
+  return loadRegionObject<T>('feature-flags.json', fallback);
+}
+export function saveFeatureFlags<T extends object>(data: T) {
+  return saveRegionObject<T>('feature-flags.json', data);
+}
+
 /**
  * Read a single JSON OBJECT (not array) region file, e.g. maturity.json which
  * holds { sectors, matrix, countrySummaries }. Falls back to the provided

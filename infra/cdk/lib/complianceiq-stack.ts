@@ -334,6 +334,11 @@ export class ComplianceIqStack extends cdk.Stack {
         userPool,
         userPoolClient,
         userPoolDomain: userPool.node.tryFindChild('UserPoolDomain') as cognito.UserPoolDomain,
+        // Force re-authentication (with MFA) at least once every 24 hours.
+        // Without this the ALB defaults to a 7-day session cookie, so users
+        // stayed logged in for days. 24h bounds the Cognito/ALB session only;
+        // it is independent of the in-app login.
+        sessionTimeout: cdk.Duration.hours(24),
         next: elbv2.ListenerAction.forward([appTargetGroup]),
       }),
     });

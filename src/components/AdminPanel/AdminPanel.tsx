@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAdmin } from '../../context/AdminContext';
 import { FeatureTogglesTab } from './FeatureTogglesTab';
 import { RegulationEditorTab } from './RegulationEditorTab';
@@ -61,6 +61,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onNavigateHome }) => {
     timelineEvents = [],
     featureFlags,
     auditLogs,
+    refreshAdminData,
     isAdminUnlocked,
     unlockAdmin,
     lockAdmin,
@@ -76,6 +77,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onNavigateHome }) => {
 
   const [activeSubTab, setActiveSubTab] = useState<AdminSubTab>('regulations');
   const [adminPasswordInput, setAdminPasswordInput] = useState('');
+
+  // Pull fresh server-authoritative data each time the admin console is opened
+  // or the sub-tab changes, so one admin sees another admin's actions (e.g.
+  // suggestions already reviewed) WITHOUT needing a manual browser refresh.
+  useEffect(() => {
+    if (isAdminUnlocked && isCurrentUserAdmin && refreshAdminData) {
+      refreshAdminData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSubTab, isAdminUnlocked]);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isFlashingSuccess, setIsFlashingSuccess] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -298,7 +309,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onNavigateHome }) => {
         </div>
 
         {/* Sub-Navigation Tabs */}
-        <div className="flex items-center space-x-1.5 mt-6 pt-4 border-t border-slate-800/80 overflow-x-auto">
+        <div className="flex items-center space-x-1.5 mt-6 pt-4 pb-3 border-t border-slate-800/80 overflow-x-auto">
           <button
             onClick={() => setActiveSubTab('countries')}
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-2 transition-all cursor-pointer whitespace-nowrap ${
